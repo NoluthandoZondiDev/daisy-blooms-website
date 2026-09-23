@@ -125,3 +125,17 @@ citation.
 ![Services desktop view](screenshots/final-services-desktop.png)
 ![Enquiry desktop view](screenshots/final-enquiry-desktop.png)
 ![Contact desktop view](screenshots/final-contact-desktop.png)
+
+## AI Disclosure Annexure
+
+AI tool used: ChatGPT
+Purpose of use: Assistance with correcting the errors in the code, layout (Grid/Flexbox), and troubleshooting during Part 2.
+Extent of use: AI-generated layout suggestions were reviewed, tested,. All final styling decisions were made by the student, who takes full ownership of the final submitted content.
+
+Student declaration: I confirm that I have reviewed all AI-assisted content 
+in this submission, understand it fully, and can explain and defend every 
+design decision reflected in this project.
+
+Student name: Noluthando Zondi
+Student number: ST10531705
+Date: 24/09/2026
