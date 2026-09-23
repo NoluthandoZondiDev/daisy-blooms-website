@@ -87,8 +87,8 @@ entries.)*
 ## Changelog
 | Date | Change |
 |---|---|
-| [Date - replace with real git commit date] | Initial commit: basic file/folder structure created (index, about, services, enquiry, contact + css/js/images folders). |
-| [Date - replace with real git commit date] | Added README.md with project overview, goals, sitemap, and references. |
+|2026-09-23  | Initial commit: basic file/folder structure created (index, about, services, enquiry, contact + css/js/images folders). |
+| 2026-09-23 | Added README.md with project overview, goals, sitemap, and references. |
 | 2026-09-10 | Replaced placeholder text on all five pages with real content: hero section, services preview, and gallery preview on index.html; salon history, mission, and team bios (with photos) on about.html; four pricing tables on services.html; full enquiry form on enquiry.html; two branch details, two embedded maps, and a general contact form on contact.html. |
 | 2026-09-10 | Expanded salon scope: reassigned team specialties to Hairstylist (Daisy), Makeup Artist (Thandi), and Nail Technician (Naledi); added Makeup and Nails pricing tables to services.html; updated the services preview on index.html to reflect all six service categories. |
 | 2026-09-10 | Reverted the above scope expansion after checking against the approved Part 1 proposal, which specifies haircuts, styling, colouring, and general beauty services only. Team roles, services preview, and pricing tables restored to the original four categories to stay consistent with the approved proposal. |
@@ -107,3 +107,4 @@ entries.)*
 team-thandi.jpg, team-naledi.jpg) are original personal photographs
 and are not sourced from the internet, so they do not require a
 citation.
+
