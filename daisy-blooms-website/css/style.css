@@ -1,0 +1,734 @@
+/* ==========================================================================
+   Daisy Blooms Salon - Stylesheet
+   Part 2: CSS Styling and Responsive Design
+   ==========================================================================
+   Colour palette: blush pink, deep plum, cream, rose-gold accent
+   Fonts: Playfair Display (headings), Montserrat (body)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. CSS Custom Properties (design tokens)
+   Centralising the palette and fonts here means every later section reuses
+   these variables instead of repeating hex codes / font names everywhere.
+   -------------------------------------------------------------------------- */
+:root {
+    /* Colour palette */
+    --color-blush: #E8A7B0;
+    --color-plum: #5C3B4E;
+    --color-cream: #FDF6F0;
+    --color-rose-gold: #C6A15B;
+
+    /* Derived shades, used for gradients / hover states */
+    --color-blush-deep: #D98A96;
+    --color-rose-gold-light: rgba(198, 161, 91, 0.35);
+
+    /* Typography */
+    --font-heading: 'Playfair Display', serif;
+    --font-body: 'Montserrat', sans-serif;
+
+    /* Spacing scale (rem-based, so it respects the user's font-size settings) */
+    --space-xs: 0.5rem;
+    --space-sm: 1rem;
+    --space-md: 2rem;
+    --space-lg: 3rem;
+    --space-xl: 5rem;
+}
+
+/* --------------------------------------------------------------------------
+   2. CSS Reset / Normalisation
+   Removes inconsistent default spacing and box-model behaviour across
+   browsers, so every element starts from the same baseline.
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    /* Sets 1rem = 16px as the baseline, but still respects browser/user
+       font-size preferences (unlike a fixed px value would). */
+    font-size: 100%;
+    scroll-behavior: smooth;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+ul,
+ol {
+    list-style: none;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+    color: inherit;
+}
+
+/* --------------------------------------------------------------------------
+   3. Base / Default Styles
+   Establishes the default look of the site: font family, base font size,
+   line-height, background and text colour. Everything else in later
+   sections builds on top of this.
+   -------------------------------------------------------------------------- */
+body {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--color-plum);
+    background-color: var(--color-cream);
+}
+
+h1, h2, h3, h4 {
+    font-family: var(--font-heading);
+    color: var(--color-plum);
+    line-height: 1.2;
+}
+
+/* Base link colour so unstyled links still fit the palette before Section 4
+   (visual styles / pseudo-classes) adds hover and focus treatments. */
+a {
+    color: var(--color-plum);
+}
+
+/* --------------------------------------------------------------------------
+   3b. Typography Styles
+   Establishes a clear type scale (font-size, font-weight, line-height,
+   letter-spacing) so headings, body text, and small UI text (labels, table
+   headers, buttons) each have a distinct, consistent voice.
+   Colours/backgrounds and hover states for these elements are handled in
+   the Visual Styles / Pseudo-Classes step, not here.
+   -------------------------------------------------------------------------- */
+
+/* Heading scale - largest (site title) down to smallest (subheadings) */
+h1 {
+    font-size: 2.75rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+}
+
+h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: var(--space-sm);
+}
+
+h3 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: var(--space-xs);
+}
+
+h4 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    margin-bottom: var(--space-xs);
+}
+
+/* Body text rhythm */
+p {
+    margin-bottom: var(--space-sm);
+}
+
+/* Tagline under the salon name in the header */
+header p {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    margin-bottom: 0;
+}
+
+/* Team member role labels (e.g. "Colour Specialist") - italic serif to
+   read as a job title rather than body copy */
+.team-role {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: 1rem;
+    letter-spacing: 0.02em;
+    margin-bottom: var(--space-xs);
+}
+
+/* Pricing table headers - small caps / wide letter-spacing so they read
+   as labels rather than data */
+table th {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+table td {
+    font-size: 0.95rem;
+}
+
+/* Form labels - slightly bolder and tighter than body copy so they're
+   scannable above each input */
+label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.02em;
+    margin-bottom: var(--space-xs);
+}
+
+/* Call-to-action buttons (Book an Enquiry, Submit Enquiry, Send Message) -
+   typography only; background, border, and hover-glow come later */
+.btn {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+/* --------------------------------------------------------------------------
+   4. Site Header
+   Flexbox column: centres the salon name and tagline as a single block.
+   -------------------------------------------------------------------------- */
+header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xs);
+    background-color: var(--color-blush);
+    color: var(--color-plum);
+    text-align: center;
+    padding: var(--space-md) var(--space-sm);
+}
+
+header h1 {
+    font-style: italic;
+    font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   5. Site Navigation
+   Flexbox row: centres the nav links with even spacing, and wraps onto a
+   second line automatically if the screen is too narrow (a first, basic
+   layer of responsiveness ahead of the dedicated media queries later).
+   -------------------------------------------------------------------------- */
+nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    background-color: var(--color-plum);
+    padding: var(--space-xs);
+}
+
+nav a {
+    display: inline-block;
+    color: var(--color-cream);
+    padding: var(--space-xs) var(--space-sm);
+    font-weight: 500;
+    letter-spacing: 0.03em;
+}
+
+/* --------------------------------------------------------------------------
+   6. Main Content Sections
+   Generic spacing so pages aren't flush against the edges. Section-specific
+   grid/flex layouts for each page are defined below.
+   -------------------------------------------------------------------------- */
+main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: var(--space-lg) var(--space-sm);
+}
+
+main section {
+    margin-bottom: var(--space-lg);
+}
+
+/* --- Home page: hero section ---
+   Flex column, centred, with a capped text width so the welcome paragraph
+   stays readable instead of stretching edge-to-edge on wide screens. */
+.hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--space-sm);
+}
+
+.hero img {
+    width: 100%;
+    max-height: 420px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.hero p {
+    /* 60ch caps line length at roughly 60 characters, the readable range
+       recommended for body text, so the welcome paragraph doesn't stretch
+       into hard-to-read full-width lines on large desktop screens. */
+    max-width: 60ch;
+}
+
+/* --- Home page: services preview ---
+   CSS Grid, 4 equal columns on desktop, collapsing to fewer columns on
+   smaller screens in the Responsive Design step. */
+.services-preview-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-md);
+    margin-bottom: var(--space-sm);
+}
+
+.services-preview-list li {
+    text-align: center;
+}
+
+/* --- Home page: gallery preview ---
+   CSS Grid, 3 equal columns to match the 3 preview images. */
+.gallery-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-sm);
+}
+
+.gallery-preview-grid img {
+    width: 100%;
+    height: 220px;
+    /* object-fit: cover crops each image to fill the fixed height without
+       distorting it, so all three gallery photos line up neatly even
+       though the source images have different original aspect ratios. */
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+/* --- About page: team section ---
+   CSS Grid, 3 equal columns, one per team member. */
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-md);
+}
+
+.team-member {
+    text-align: center;
+}
+
+.team-member img {
+    width: 160px;
+    height: 160px;
+    /* object-fit: cover + border-radius: 50% turns each square source photo
+       into a clean circle without stretching it - matches the "circular
+       photo placeholders" look approved in the design brief. */
+    object-fit: cover;
+    border-radius: 50%;
+    margin: 0 auto var(--space-sm);
+}
+
+/* --- Services page: pricing tables ---
+   Full-width tables with a simple, consistent column layout. */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th,
+table td {
+    text-align: left;
+    padding: var(--space-xs) var(--space-sm);
+}
+
+/* --- Contact page: branch details and maps ---
+   CSS Grid, 2 equal columns (Rosebank / Melville) on desktop. */
+.branch-grid,
+.map-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+}
+
+.branch ul {
+    margin-top: var(--space-xs);
+}
+
+/* --- Forms (enquiry.html and contact.html) ---
+   Flex column: stacks label + input pairs vertically with consistent
+   spacing, and caps the form width so inputs don't stretch full-page-wide
+   on a large desktop screen. */
+form {
+    display: flex;
+    flex-direction: column;
+    max-width: 500px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: var(--space-sm);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: var(--space-xs);
+    border: 1px solid var(--color-plum);
+    border-radius: 4px;
+    background-color: var(--color-cream);
+}
+
+/* --------------------------------------------------------------------------
+   8. Visual Styles and Pseudo-Classes
+   Colour, background-color, border, and box-shadow treatments, plus
+   :hover / :focus / :active states for every interactive element.
+   -------------------------------------------------------------------------- */
+
+/* --- Section heading dividers ---
+   Thin rose-gold lines either side of every h2, per the approved design
+   brief (e.g. "OUR SERVICES" style centred labels). Built with flexbox and
+   ::before/::after pseudo-elements rather than extra markup. */
+main h2 {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    gap: var(--space-sm);
+    text-transform: uppercase;
+    font-size: 1.6rem;
+    letter-spacing: 0.08em;
+}
+
+main h2::before,
+main h2::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background-color: var(--color-rose-gold);
+}
+
+/* --- Nav links: hover, focus, active states --- */
+nav a:hover,
+nav a:focus {
+    background-color: var(--color-rose-gold);
+    color: var(--color-plum);
+    border-radius: 4px;
+    outline: none;
+}
+
+nav a:active {
+    background-color: var(--color-blush-deep);
+}
+
+/* --- General links (outside nav and buttons) --- */
+main a:not(.btn):hover,
+main a:not(.btn):focus {
+    color: var(--color-rose-gold);
+    text-decoration: underline;
+}
+
+/* --- Home page: hero section ---
+   Gradient background (blush pink to a deeper rose) behind the hero image,
+   per the approved design brief. */
+.hero {
+    background: linear-gradient(135deg, var(--color-blush), var(--color-blush-deep));
+    padding: var(--space-lg) var(--space-sm);
+    border-radius: 8px;
+}
+
+.hero img {
+    border: 4px solid var(--color-cream);
+    box-shadow: 0 4px 12px rgba(92, 59, 78, 0.25);
+}
+
+/* --- Home page: services preview cards ---
+   Rose-gold top border by default; on hover the card lifts slightly and
+   gains a soft rose-gold glow, per the approved design brief. */
+.services-preview-list li {
+    background-color: #FFFFFF;
+    border-top: 3px solid var(--color-rose-gold);
+    border-radius: 4px;
+    padding: var(--space-md) var(--space-sm);
+    box-shadow: 0 2px 6px rgba(92, 59, 78, 0.08);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.services-preview-list li:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 20px var(--color-rose-gold-light);
+}
+
+/* --- Home page: gallery preview ---
+   Zoom-in effect on hover, per the approved design brief. The image is
+   scaled up slightly while its container clips the overflow, so the zoom
+   stays contained within the existing image frame. */
+.gallery-preview-grid a {
+    display: block;
+    overflow: hidden;
+    border-radius: 4px;
+}
+
+.gallery-preview-grid img {
+    transition: transform 0.35s ease;
+}
+
+.gallery-preview-grid a:hover img,
+.gallery-preview-grid a:focus img {
+    transform: scale(1.08);
+}
+
+/* --- About page: team photos ---
+   Subtle rose-gold ring on hover, echoing the glow used on cards/buttons. */
+.team-member img {
+    border: 3px solid transparent;
+    transition: border-color 0.25s ease;
+}
+
+.team-member:hover img {
+    border-color: var(--color-rose-gold);
+}
+
+/* --- Services page: pricing tables ---
+   Rose-gold header row, subtle row separators, and a hover highlight so
+   it's easy to track a row across the two columns. */
+table thead tr {
+    background-color: var(--color-rose-gold);
+    color: var(--color-plum);
+}
+
+table tbody tr {
+    border-bottom: 1px solid var(--color-blush);
+    transition: background-color 0.2s ease;
+}
+
+table tbody tr:hover {
+    background-color: var(--color-cream);
+}
+
+/* --- Contact page: branch cards --- */
+.branch {
+    background-color: #FFFFFF;
+    border: 1px solid var(--color-blush);
+    border-radius: 4px;
+    padding: var(--space-md);
+}
+
+/* --- Forms: focus states ---
+   Inputs get a visible rose-gold border and soft glow on focus, both for
+   the approved design language and for accessibility (a clear focus
+   indicator for keyboard users). */
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: var(--color-rose-gold);
+    outline: none;
+    box-shadow: 0 0 0 3px var(--color-rose-gold-light);
+}
+
+/* --- Buttons ---
+   Solid rose-gold background by default; hover lifts the button slightly
+   and adds the rose-gold glow used across cards and images. :active gives
+   immediate visual feedback on click. */
+.btn {
+    background-color: var(--color-rose-gold);
+    color: var(--color-plum);
+    border: none;
+    border-radius: 4px;
+    padding: var(--space-xs) var(--space-md);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.btn:hover,
+.btn:focus {
+    background-color: var(--color-blush-deep);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px var(--color-rose-gold-light);
+    outline: none;
+}
+
+.btn:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+/* --------------------------------------------------------------------------
+   10. Responsive Design
+   Mobile and tablet breakpoints, using max-width media queries since the
+   base styles above were written desktop-first. Grids collapse to fewer
+   columns, the nav restacks, typography scales down, and the pricing
+   tables become horizontally scrollable rather than squashing.
+   -------------------------------------------------------------------------- */
+
+/* Table scroll container: on any screen where a table would otherwise be
+   forced narrower than its content, this lets the table scroll sideways
+   inside its own box instead of squashing every column unreadably. */
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.table-wrapper table {
+    min-width: 420px;
+}
+
+/* --- Tablet breakpoint (max-width: 900px) --- */
+@media (max-width: 900px) {
+    main {
+        padding: var(--space-md) var(--space-sm);
+    }
+
+    h1 {
+        font-size: 2.25rem;
+    }
+
+    main h2 {
+        font-size: 1.4rem;
+    }
+
+    /* 4-column and 3-column grids drop to 2 columns on tablet */
+    .services-preview-list,
+    .gallery-preview-grid,
+    .team-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Branch details and maps stack to a single column earlier than the
+       grids above, since each branch card holds a lot of text and a full
+       embedded map - 2 columns gets cramped sooner. */
+    .branch-grid,
+    .map-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* --- Mobile breakpoint (max-width: 600px) --- */
+@media (max-width: 600px) {
+    header {
+        padding: var(--space-sm);
+    }
+
+    h1 {
+        font-size: 1.75rem;
+    }
+
+    main h2 {
+        font-size: 1.2rem;
+        gap: var(--space-xs);
+    }
+
+    /* Nav restacks vertically - easier to tap on a narrow phone screen
+       than a wrapped row of small links. */
+    nav {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+    }
+
+    nav a {
+        text-align: center;
+        padding: var(--space-xs);
+    }
+
+    /* Every remaining multi-column grid collapses to a single column. */
+    .services-preview-list,
+    .gallery-preview-grid,
+    .team-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hero {
+        padding: var(--space-md) var(--space-xs);
+    }
+
+    .hero img {
+        max-height: 260px;
+    }
+
+    /* Forms take the full available width instead of the 500px desktop
+       cap, since there's no surrounding whitespace to spare on mobile. */
+    form {
+        max-width: 100%;
+    }
+
+    .testimonial-band blockquote {
+        font-size: 1.05rem;
+    }
+
+    .footer-content {
+        flex-direction: column;
+        gap: var(--space-xs);
+    }
+}
+
+/* --- Home page: testimonial band ---
+   Solid rose-gold background with plum text, per the approved design brief
+   and mockup. Sits full-width within main's padding, distinct from the
+   white service cards and cream page background around it. */
+.testimonial-band {
+    background-color: var(--color-rose-gold);
+    color: var(--color-plum);
+    text-align: center;
+    padding: var(--space-lg) var(--space-md);
+    border-radius: 8px;
+}
+
+.testimonial-rating {
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    margin-bottom: var(--space-sm);
+}
+
+.testimonial-band blockquote {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: 1.3rem;
+    max-width: 60ch;
+    margin: 0 auto;
+}
+
+.testimonial-band cite {
+    display: block;
+    margin-top: var(--space-sm);
+    font-family: var(--font-body);
+    font-style: normal;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   11. Site Footer
+   -------------------------------------------------------------------------- */
+footer {
+    background-color: var(--color-plum);
+    color: var(--color-cream);
+    text-align: center;
+    padding: var(--space-md) var(--space-sm);
+    font-size: 0.9rem;
+}
+
+/* Icon + text pairs (address, phone, hours), per the approved design brief's
+   requirement to keep contact details prominent in the footer. */
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-sm);
+    font-size: 0.85rem;
+}
+
+.footer-icon {
+    margin-right: 0.3em;
+}

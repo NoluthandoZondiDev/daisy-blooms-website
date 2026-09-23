@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daisy Blooms Salon | Home</title>
+    <!-- Google Fonts: Playfair Display for headings, Montserrat for body text -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- Website Header -->
+    <header>
+        <h1>Daisy Blooms Salon</h1>
+        <p>Hair &amp; beauty, tailored to you</p>
+    </header>
+
+    <!-- Website Navigation: identical on every page for a working nav system -->
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="services.html">Services</a>
+        <a href="enquiry.html">Enquiry</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+
+    <!-- Main Page Content -->
+    <main>
+
+        <!-- Hero / welcome section -->
+        <!-- hero-banner.jpg is sourced from Unsplash (Tile Merchant Ireland);
+             see the References section in README.md for the full citation. -->
+        <section class="hero">
+            <!-- srcset gives the browser three resolutions to choose from, so a
+                 phone downloads the 480px version instead of the full-size
+                 1200px original; sizes tells it the image is roughly full
+                 viewport width up to 900px, then capped at 900px beyond that. -->
+            <img src="images/hero-banner-medium.jpg"
+                 srcset="images/hero-banner-small.jpg 480w,
+                         images/hero-banner-medium.jpg 800w,
+                         images/hero-banner-large.jpg 1200w"
+                 sizes="(max-width: 900px) 100vw, 900px"
+                 alt="Interior of Daisy Blooms Salon styling stations">
+            <h2>Look Good, Feel Golden</h2>
+            <p>
+                Welcome to Daisy Blooms Salon, a neighbourhood favourite for haircuts,
+                styling, colouring, and beauty treatments. Our team takes the time to
+                understand exactly what you want, so you walk out feeling like the
+                best version of yourself.
+            </p>
+            <a href="enquiry.html" class="btn">Book an Enquiry</a>
+        </section>
+
+        <!-- Services preview section -->
+        <section class="services-preview">
+            <h2>Our Services</h2>
+            <ul class="services-preview-list">
+                <li>
+                    <h3>Haircuts</h3>
+                    <p>Precision cuts and trims for every hair type and length.</p>
+                </li>
+                <li>
+                    <h3>Styling</h3>
+                    <p>Blow-outs, braids, and special-occasion styling.</p>
+                </li>
+                <li>
+                    <h3>Colouring</h3>
+                    <p>Full colour, balayage, and creative colour transformations.</p>
+                </li>
+                <li>
+                    <h3>Beauty Treatments</h3>
+                    <p>Deep conditioning, scalp treatments, and brow shaping.</p>
+                </li>
+            </ul>
+            <a href="services.html">See full price list &rarr;</a>
+        </section>
+
+        <!-- Gallery preview section -->
+        <!-- gallery-1.jpg, gallery-2.jpg, and gallery-3.jpg are sourced from
+             Unsplash (see image-source-log.md and the References section in
+             README.md for full citations). -->
+        <section class="gallery-preview">
+            <h2>Our Work</h2>
+            <div class="gallery-preview-grid">
+                <a href="about.html">
+                    <img src="images/gallery-1-medium.jpg"
+                         srcset="images/gallery-1-small.jpg 480w,
+                                 images/gallery-1-medium.jpg 800w,
+                                 images/gallery-1-large.jpg 1200w"
+                         sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 300px"
+                         alt="Client with styled curls at Daisy Blooms Salon">
+                </a>
+                <a href="about.html">
+                    <img src="images/gallery-2-medium.jpg"
+                         srcset="images/gallery-2-small.jpg 480w,
+                                 images/gallery-2-medium.jpg 800w,
+                                 images/gallery-2-large.jpg 1200w"
+                         sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 300px"
+                         alt="Vibrant creative colour work by Daisy Blooms Salon">
+                </a>
+                <a href="about.html">
+                    <img src="images/gallery-3-medium.jpg"
+                         srcset="images/gallery-3-small.jpg 480w,
+                                 images/gallery-3-medium.jpg 800w,
+                                 images/gallery-3-large.jpg 1200w"
+                         sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 300px"
+                         alt="Client with long braided hairstyle at Daisy Blooms Salon">
+                </a>
+            </div>
+        </section>
+
+        <!-- Testimonial band -->
+        <!-- Solid rose-gold background with plum text, per the approved design
+             brief and mockup ("Loved by our local clients"). -->
+        <section class="testimonial-band">
+            <p class="testimonial-rating">&#9733;&#9733;&#9733;&#9733;&#9733; Loved by our local clients</p>
+            <blockquote>
+                "Daisy always knows exactly what I want before I even finish
+                explaining it. Best haircut I've had in years."
+                <cite>&mdash; Kopano R.</cite>
+            </blockquote>
+        </section>
+
+    </main>
+
+    <!-- Website Footer -->
+    <!-- Footer: contact details and opening hours, per the approved design
+         brief's UX requirement to keep this information prominent on every
+         page rather than only on contact.html. -->
+    <footer>
+        <div class="footer-content">
+            <p><span class="footer-icon" aria-hidden="true">&#128205;</span> 15 Baker Street, Rosebank, Johannesburg, 2196</p>
+            <p><span class="footer-icon" aria-hidden="true">&#128222;</span> 011 447 2200</p>
+            <p><span class="footer-icon" aria-hidden="true">&#128337;</span> Mon - Fri: 09:00 - 18:00 &nbsp;|&nbsp; Sat: 08:00 - 16:00 &nbsp;|&nbsp; Sun: Closed</p>
+        </div>
+        <p>&copy; 2026 Daisy Blooms Salon. All rights reserved.</p>
+    </footer>
+
+</body>
+
+</html>

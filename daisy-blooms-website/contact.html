@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daisy Blooms Salon | Contact</title>
+    <!-- Google Fonts: Playfair Display for headings, Montserrat for body text -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Daisy Blooms Salon</h1>
+        <p>Hair &amp; beauty, tailored to you</p>
+    </header>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="services.html">Services</a>
+        <a href="enquiry.html">Enquiry</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+
+    <main>
+
+        <!-- Contact details section -->
+        <section>
+            <h2>Get In Touch</h2>
+            <div class="branch-grid">
+
+                <div class="branch">
+                    <h3>Rosebank Branch</h3>
+                    <p>15 Baker Street, Rosebank, Johannesburg, 2196</p>
+                    <p>Phone: 011 447 2200</p>
+                    <p>Email: rosebank@daisyblooms.co.za</p>
+                    <h4>Opening Hours</h4>
+                    <ul>
+                        <li>Mon - Fri: 09:00 - 18:00</li>
+                        <li>Saturday: 08:00 - 16:00</li>
+                        <li>Sunday: Closed</li>
+                    </ul>
+                </div>
+
+                <div class="branch">
+                    <h3>Melville Branch</h3>
+                    <p>7th Street, Melville, Johannesburg, 2109</p>
+                    <p>Phone: 011 482 3355</p>
+                    <p>Email: melville@daisyblooms.co.za</p>
+                    <h4>Opening Hours</h4>
+                    <ul>
+                        <li>Mon - Fri: 09:00 - 18:00</li>
+                        <li>Saturday: 08:00 - 16:00</li>
+                        <li>Sunday: Closed</li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Map section (more than one location, per POE requirement) -->
+        <!-- Each iframe uses the free "?q=<location>&output=embed" Google Maps
+             URL format rather than the full Maps Embed API, since that would
+             require an API key and billing setup. This still gives a real,
+             working embedded map for each branch without needing credentials. -->
+        <section>
+            <h2>Find Us</h2>
+            <div class="map-grid">
+                <div class="map-embed">
+                    <h3>Rosebank</h3>
+                    <iframe
+                        src="https://www.google.com/maps?q=Rosebank,Johannesburg&output=embed"
+                        width="100%" height="300" style="border:0;" loading="lazy"
+                        title="Map showing Daisy Blooms Salon Rosebank branch">
+                    </iframe>
+                </div>
+                <div class="map-embed">
+                    <h3>Melville</h3>
+                    <iframe
+                        src="https://www.google.com/maps?q=Melville,Johannesburg&output=embed"
+                        width="100%" height="300" style="border:0;" loading="lazy"
+                        title="Map showing Daisy Blooms Salon Melville branch">
+                    </iframe>
+                </div>
+            </div>
+        </section>
+
+        <!-- General contact form section -->
+        <section>
+            <h2>Send Us a Message</h2>
+            <!-- General-purpose contact form, distinct from the service-specific
+                 enquiry.html form: no date or service dropdown here, since this
+                 is for messages unrelated to booking a particular service.
+                 action="#" is a placeholder pending real backend processing. -->
+            <form action="#" method="post">
+
+                <div class="form-group">
+                    <label for="contact-name">Full Name</label>
+                    <input type="text" id="contact-name" name="contact-name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="contact-email">Email Address</label>
+                    <input type="email" id="contact-email" name="contact-email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="contact-type">Message Type</label>
+                    <select id="contact-type" name="contact-type" required>
+                        <option value="">-- Select a message type --</option>
+                        <option value="general">General Enquiry</option>
+                        <option value="feedback">Feedback</option>
+                        <option value="complaint">Complaint</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="contact-message">Message</label>
+                    <textarea id="contact-message" name="contact-message" rows="5" required></textarea>
+                </div>
+
+                <button type="submit" class="btn">Send Message</button>
+
+            </form>
+        </section>
+
+    </main>
+
+    <!-- Footer: contact details and opening hours, per the approved design
+         brief's UX requirement to keep this information prominent on every
+         page rather than only on contact.html. -->
+    <footer>
+        <div class="footer-content">
+            <p><span class="footer-icon" aria-hidden="true">&#128205;</span> 15 Baker Street, Rosebank, Johannesburg, 2196</p>
+            <p><span class="footer-icon" aria-hidden="true">&#128222;</span> 011 447 2200</p>
+            <p><span class="footer-icon" aria-hidden="true">&#128337;</span> Mon - Fri: 09:00 - 18:00 &nbsp;|&nbsp; Sat: 08:00 - 16:00 &nbsp;|&nbsp; Sun: Closed</p>
+        </div>
+        <p>&copy; 2026 Daisy Blooms Salon. All rights reserved.</p>
+    </footer>
+
+</body>
+
+</html>

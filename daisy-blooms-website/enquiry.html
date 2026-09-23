@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daisy Blooms Salon | Enquiry</title>
+    <!-- Google Fonts: Playfair Display for headings, Montserrat for body text -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Daisy Blooms Salon</h1>
+        <p>Hair &amp; beauty, tailored to you</p>
+    </header>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="services.html">Services</a>
+        <a href="enquiry.html">Enquiry</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+
+    <main>
+
+        <!-- Enquiry intro section -->
+        <section>
+            <h2>Make an Enquiry</h2>
+            <p>
+                Ready to book, or want to check pricing and availability before you
+                commit? Fill in the form below and our team will confirm your
+                appointment details as soon as possible.
+            </p>
+        </section>
+
+        <!-- Enquiry form section (client-side validation added in Part 3) -->
+        <section>
+            <h2>Enquiry Form</h2>
+            <!-- action="#" is a placeholder: this form doesn't submit to a real
+                 backend yet, since server-side processing is outside the scope
+                 of this module. "required" attributes on individual fields give
+                 basic client-side validation ahead of the full JS validation
+                 and processed response due in Part 3. -->
+            <form action="#" method="post">
+
+                <div class="form-group">
+                    <label for="enquiry-name">Full Name</label>
+                    <input type="text" id="enquiry-name" name="enquiry-name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="enquiry-email">Email Address</label>
+                    <input type="email" id="enquiry-email" name="enquiry-email" required>
+                </div>
+
+                <!-- Basic HTML5 validation for now: "required" stops empty submission,
+                     and the pattern restricts the phone field to exactly 10 digits
+                     (South African local format, e.g. 0821234567). Full JavaScript
+                     validation with custom error messages is added in Part 3. -->
+                <div class="form-group">
+                    <label for="enquiry-phone">Phone Number</label>
+                    <input type="tel" id="enquiry-phone" name="enquiry-phone"
+                           pattern="[0-9]{10}" placeholder="0821234567" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="enquiry-service">Service of Interest</label>
+                    <select id="enquiry-service" name="enquiry-service" required>
+                        <option value="">-- Select a service --</option>
+                        <option value="haircut">Haircut</option>
+                        <option value="styling">Styling</option>
+                        <option value="colouring">Colouring</option>
+                        <option value="beauty-treatment">Beauty Treatment</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="enquiry-date">Preferred Date</label>
+                    <input type="date" id="enquiry-date" name="enquiry-date" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="enquiry-details">Additional Details</label>
+                    <textarea id="enquiry-details" name="enquiry-details" rows="4"
+                              placeholder="Tell us anything else we should know"></textarea>
+                </div>
+
+                <button type="submit" class="btn">Submit Enquiry</button>
+
+            </form>
+        </section>
+
+    </main>
+
+    <!-- Footer: contact details and opening hours, per the approved design
+         brief's UX requirement to keep this information prominent on every
+         page rather than only on contact.html. -->
+    <footer>
+        <div class="footer-content">
+            <p><span class="footer-icon" aria-hidden="true">&#128205;</span> 15 Baker Street, Rosebank, Johannesburg, 2196</p>
+            <p><span class="footer-icon" aria-hidden="true">&#128222;</span> 011 447 2200</p>
+            <p><span class="footer-icon" aria-hidden="true">&#128337;</span> Mon - Fri: 09:00 - 18:00 &nbsp;|&nbsp; Sat: 08:00 - 16:00 &nbsp;|&nbsp; Sun: Closed</p>
+        </div>
+        <p>&copy; 2026 Daisy Blooms Salon. All rights reserved.</p>
+    </footer>
+
+</body>
+
+</html>
