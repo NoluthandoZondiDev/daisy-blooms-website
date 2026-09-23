@@ -108,3 +108,20 @@ team-thandi.jpg, team-naledi.jpg) are original personal photographs
 and are not sourced from the internet, so they do not require a
 citation.
 
+## Responsive Design Evidence
+
+### Home Page
+**Desktop (1280px)**
+![Home desktop view](screenshots/final-index-desktop.png)
+
+**Tablet (800px)**
+![Home tablet view](screenshots/final-index-tablet.png)
+
+**Mobile (375px)**
+![Home mobile view](screenshots/final-index-mobile.png)
+
+### Other Pages (Desktop view)
+![About desktop view](screenshots/final-about-desktop.png)
+![Services desktop view](screenshots/final-services-desktop.png)
+![Enquiry desktop view](screenshots/final-enquiry-desktop.png)
+![Contact desktop view](screenshots/final-contact-desktop.png)
