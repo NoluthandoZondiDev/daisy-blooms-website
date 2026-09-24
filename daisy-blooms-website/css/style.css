@@ -312,6 +312,7 @@ main section {
        distorting it, so all three gallery photos line up neatly even
        though the source images have different original aspect ratios. */
     object-fit: cover;
+    object-position: center 30%;
     border-radius: 4px;
 }
 
