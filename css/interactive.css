@@ -1,0 +1,196 @@
+/* ==========================================================================
+   interactive.css  |  Part 3: accordion, search box and sort menu
+   Loaded after style.css, so it only adds new rules.
+   Palette: blush pink #E8A7B0 | deep plum #5C3B4E | cream #FDF6F0 | rose-gold #C6A15B
+   ========================================================================== */
+
+/* ---------- Search, sort and expand/collapse tools ---------- */
+.services-tools {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 0.5rem;
+}
+
+.services-intro {
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+.tools-row {
+  display: flex;
+  flex-wrap: wrap;            /* tools wrap onto new lines on small screens */
+  align-items: flex-end;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.tool-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 220px;
+}
+
+.tool-field label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #5C3B4E;
+}
+
+.tool-field input,
+.tool-field select {
+  padding: 0.65rem 0.9rem;
+  border: 2px solid #C6A15B;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #5C3B4E;
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+.tool-field input:focus,
+.tool-field select:focus {
+  outline: 3px solid rgba(198, 161, 91, 0.45);
+  border-color: #5C3B4E;
+}
+
+.tool-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.tool-buttons button {
+  padding: 0.65rem 1rem;
+  border: 2px solid #C6A15B;
+  border-radius: 999px;
+  background: #FDF6F0;
+  color: #5C3B4E;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.tool-buttons button:hover {
+  background: #E8A7B0;
+  box-shadow: 0 0 10px rgba(198, 161, 91, 0.45);
+}
+
+.tool-buttons button:focus-visible {
+  outline: 3px solid #5C3B4E;
+  outline-offset: 3px;
+}
+
+.services-summary {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #5C3B4E;
+}
+
+.services-empty {
+  margin: 1rem auto 0;
+  max-width: 600px;
+  padding: 0.9rem 1rem;
+  border: 2px dashed #C6A15B;
+  border-radius: 10px;
+  text-align: center;
+  background: #ffffff;
+}
+
+.services-empty[hidden] {
+  display: none;
+}
+
+/* ---------- Accordion ---------- */
+.accordion-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border: none;
+  background: none;
+  /* The button copies the look of the heading around it */
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+
+.accordion-trigger:focus-visible {
+  outline: 3px solid #C6A15B;
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
+/* The little arrow: points down when closed, up when open */
+.accordion-icon {
+  width: 0.55em;
+  height: 0.55em;
+  border-right: 3px solid #C6A15B;
+  border-bottom: 3px solid #C6A15B;
+  transform: rotate(45deg);
+  margin-top: -0.2em;
+  transition: transform 0.3s ease;
+}
+
+.accordion-trigger[aria-expanded="true"] .accordion-icon {
+  transform: rotate(-135deg);
+}
+
+/* Smooth open/close: the panel is a grid whose single row animates
+   between full height (1fr) and zero height (0fr). */
+.accordion-panel {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 0.3s ease;
+}
+
+.accordion-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.accordion-panel.is-collapsed {
+  grid-template-rows: 0fr;
+}
+
+/* Closed panels are also removed from keyboard and screen-reader access */
+.accordion-panel.is-collapsed .accordion-inner {
+  visibility: hidden;
+  transition: visibility 0s linear 0.3s;
+}
+
+/* The hidden attribute must win over the display rules above */
+.service-group[hidden] {
+  display: none !important;
+}
+
+tbody tr[hidden] {
+  display: none !important;
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 600px) {
+  .tool-field {
+    min-width: 100%;
+  }
+
+  .tool-buttons {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Respect visitors who ask their device for less motion */
+@media (prefers-reduced-motion: reduce) {
+  .accordion-panel,
+  .accordion-icon,
+  .accordion-inner,
+  .tool-buttons button {
+    transition: none;
+  }
+}

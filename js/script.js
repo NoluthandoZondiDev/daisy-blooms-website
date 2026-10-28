@@ -4,9 +4,10 @@
    each page, so the HTML already exists when this code runs.
 
    Sections in this file:
-     1. Lightbox       (index.html and gallery.html)
-     2. Gallery filter (gallery.html)
-   More sections (accordion, search, forms) are added in later steps.
+     1. Lightbox         (index.html and gallery.html)
+     2. Gallery filter   (gallery.html)
+     3. Services page    (services.html): accordion, search, sort, summary
+   More sections (forms and map) are added in later steps.
    ========================================================================== */
 
 // Wait until the page has finished loading, then start each feature.
@@ -15,6 +16,7 @@
 document.addEventListener("DOMContentLoaded", function () {
   initLightbox();
   initGalleryFilter();
+  initServicesPage();
 });
 
 
@@ -273,4 +275,154 @@ function initGalleryFilter() {
       applyFilter(button.dataset.filter);
     }
   });
+}
+
+
+/* ==========================================================================
+   3. SERVICES PAGE: accordion, search, sort and live summary
+   - Accordion: each service group opens and closes with its heading button.
+   - Search:    typing filters the price rows as you type.
+   - Sort:      reorders the rows inside every table by price.
+   - Summary:   a line of text that is rebuilt from the visible rows.
+   The tables are plain HTML, so the page still works without JavaScript.
+   ========================================================================== */
+function initServicesPage() {
+  var searchBox = document.getElementById("service-search");
+  if (!searchBox) {
+    return; // Not the services page.
+  }
+
+  var sortMenu   = document.getElementById("service-sort");
+  var summary    = document.getElementById("services-summary");
+  var emptyNote  = document.getElementById("services-empty");
+  var groups     = document.querySelectorAll(".service-group");
+  var triggers   = document.querySelectorAll(".accordion-trigger");
+
+  // Remember each row's starting position, so "Default order" can restore it
+  groups.forEach(function (group) {
+    group.querySelectorAll("tbody tr").forEach(function (row, position) {
+      row.dataset.order = position;
+    });
+  });
+
+  // ---------- Accordion ----------
+  // Open or close one group. The aria-expanded value tells assistive
+  // technology the state; the CSS class animates the panel.
+  function setGroupOpen(trigger, open) {
+    var panel = document.getElementById(trigger.getAttribute("aria-controls"));
+    trigger.setAttribute("aria-expanded", open ? "true" : "false");
+    panel.classList.toggle("is-collapsed", !open);
+  }
+
+  triggers.forEach(function (trigger) {
+    trigger.addEventListener("click", function () {
+      var isOpen = trigger.getAttribute("aria-expanded") === "true";
+      setGroupOpen(trigger, !isOpen);
+    });
+  });
+
+  document.getElementById("expand-all").addEventListener("click", function () {
+    triggers.forEach(function (trigger) { setGroupOpen(trigger, true); });
+  });
+
+  document.getElementById("collapse-all").addEventListener("click", function () {
+    triggers.forEach(function (trigger) { setGroupOpen(trigger, false); });
+  });
+
+  // ---------- Search ----------
+  // Turn a price cell such as "R1,200" into the number 1200
+  function priceOf(row) {
+    return parseInt(row.cells[1].textContent.replace(/[^0-9]/g, ""), 10);
+  }
+
+  // Format a number back into rand with a comma, e.g. 1200 -> "R1,200"
+  function rand(amount) {
+    return "R" + String(amount).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+  function applySearch() {
+    var query = searchBox.value.trim().toLowerCase();
+    var visiblePrices = [];
+
+    groups.forEach(function (group) {
+      var matches = 0;
+
+      group.querySelectorAll("tbody tr").forEach(function (row) {
+        var name = row.cells[0].textContent.toLowerCase();
+        // A row matches if the search box is empty or its text appears in the service name
+        var show = query === "" || name.indexOf(query) !== -1;
+        row.hidden = !show;
+        if (show) {
+          matches++;
+          visiblePrices.push(priceOf(row));
+        }
+      });
+
+      // Hide a whole group when none of its rows match
+      group.hidden = matches === 0;
+
+      // While searching, open any group that has matches so results are visible
+      if (query !== "" && matches > 0) {
+        setGroupOpen(group.querySelector(".accordion-trigger"), true);
+      }
+    });
+
+    updateSummary(query, visiblePrices);
+  }
+
+  // Rebuild the sentence under the tools from the rows currently showing.
+  // textContent is used (never innerHTML), so whatever a visitor types can
+  // never be run as code.
+  function updateSummary(query, prices) {
+    if (prices.length === 0) {
+      summary.textContent = "";
+      emptyNote.textContent = "No services match \u201C" + query + "\u201D. Try a word like cut, braid, colour or brow.";
+      emptyNote.hidden = false;
+      return;
+    }
+
+    emptyNote.hidden = true;
+    var lowest  = Math.min.apply(null, prices);
+    var highest = Math.max.apply(null, prices);
+    var label = prices.length === 1 ? "service" : "services";
+
+    summary.textContent = (query === "" ? "Showing all " : "Showing ") +
+      prices.length + " " + label +
+      (prices.length > 1 ? ", with prices from " + rand(lowest) + " to " + rand(highest) : ", priced at " + rand(lowest)) + ".";
+  }
+
+  searchBox.addEventListener("input", applySearch);
+
+  // Pressing Escape in the search box clears it
+  searchBox.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      searchBox.value = "";
+      applySearch();
+    }
+  });
+
+  // ---------- Sort ----------
+  // Reorder the rows inside every table. Appending a row that is already
+  // in the table simply moves it, so no rows are copied or lost.
+  function applySort() {
+    var mode = sortMenu.value;
+
+    groups.forEach(function (group) {
+      var body = group.querySelector("tbody");
+      var rows = Array.prototype.slice.call(body.querySelectorAll("tr"));
+
+      rows.sort(function (a, b) {
+        if (mode === "low")  { return priceOf(a) - priceOf(b); }
+        if (mode === "high") { return priceOf(b) - priceOf(a); }
+        return a.dataset.order - b.dataset.order;   // default: original order
+      });
+
+      rows.forEach(function (row) { body.appendChild(row); });
+    });
+  }
+
+  sortMenu.addEventListener("change", applySort);
+
+  // Fill in the summary line when the page first loads
+  applySearch();
 }
