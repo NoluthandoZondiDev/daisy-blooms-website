@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Salon Gallery: Braids, Colour &amp; Cuts | Daisy Blooms Salon</title>
+  <meta name="description" content="See braids, colour, haircuts and beauty treatments from Daisy Blooms Salon in Rosebank and Melville, Johannesburg. Browse the gallery by service.">
+  <meta name="keywords" content="hair salon gallery, braids Johannesburg, hair colouring Rosebank, haircut Melville, beauty salon Johannesburg, Daisy Blooms Salon">
+
+  <!-- Google Fonts: Playfair Display for headings, Montserrat for body text -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Main site styles, then the Part 3 gallery and lightbox styles -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/gallery.css">
+</head>
+
+<body>
+
+  <!-- Website Header -->
+  <header>
+    <h1>Daisy Blooms Salon</h1>
+    <p>Hair &amp; beauty, tailored to you</p>
+  </header>
+
+  <!-- Website Navigation: identical on every page for a working nav system -->
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="services.html">Services</a> <a href="gallery.html">Gallery</a>
+    <a href="enquiry.html">Enquiry</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
+  <!-- Main Page Content -->
+  <main>
+
+    <section class="gallery-page">
+      <h2>Our Work</h2>
+      <p class="gallery-intro">
+        Browse braids, colour, haircuts, and beauty treatments from Daisy Blooms
+        Salon in Rosebank and Melville, Johannesburg. Choose a service to filter
+        the photos, then tap any picture to see it larger.
+      </p>
+
+      <!-- Filter buttons: script.js shows or hides photos by their data-category.
+           aria-pressed tells screen readers which filter is on. -->
+      <div class="filter-bar" role="group" aria-label="Filter the gallery by service">
+        <button type="button" data-filter="all" aria-pressed="true">All</button>
+        <button type="button" data-filter="haircuts" aria-pressed="false">Haircuts</button>
+        <button type="button" data-filter="styling" aria-pressed="false">Styling</button>
+        <button type="button" data-filter="colouring" aria-pressed="false">Colouring</button>
+        <button type="button" data-filter="beauty" aria-pressed="false">Beauty Treatments</button>
+      </div>
+
+      <!-- aria-live makes screen readers announce the new count after filtering -->
+      <p id="gallery-count" class="gallery-count" aria-live="polite">Showing all 16 photos</p>
+
+      <!-- data-lightbox-group tells script.js that every link with the class
+           lightbox-link inside this grid opens in the pop-up photo viewer.
+           The small image is shown in the grid; the link points to the larger version. -->
+      <div class="gallery-grid" data-lightbox-group>
+
+        <!-- Photo 1: Bridal styling (Styling) -->
+        <figure class="gallery-item" data-category="styling">
+          <a href="images/gallery/bridal-hair-styling-salon-suite.jpg" class="lightbox-link">
+            <img src="images/gallery/bridal-hair-styling-salon-suite-small.jpg"
+                 alt="Hair stylist styling a bride&#x27;s long dark hair with a braided detail in a bright salon suite with a large arched mirror"
+                 width="400" height="600" loading="lazy">
+          </a>
+          <figcaption>
+            <span class="gallery-caption">Bridal styling</span>
+            <span class="gallery-tag">Styling</span>
+          </figcaption>
+        </figure>
+        <!-- Photo 2: Vivid pink colour (Colouring) -->
+        <figure class="gallery-item" data-category="colouring">
+          <a href="images/gallery/vibrant-pink-short-hair-colour-profile.jpg" class="lightbox-link">
+            <img src="images/gallery/vibrant-pink-short-hair-colour-profile-small.jpg"
+                 alt="Woman in profile with short, vivid pink dyed hair against a dark background"
+                 width="480" height="600" loading="lazy">
+          </a>
+          <figcaption>
+            <span class="gallery-caption">Vivid pink colour</span>
+            <span class="gallery-tag">Colouring</span>
+          </figcaption>
+        </figure>
+        <!-- Photo 3: Women's cut (Haircuts) -->
+        <figure class="gallery-item" data-category="haircuts">
+          <a href="images/gallery/womens-haircut-scissors-comb-wet-hair.jpg" class="lightbox-link">
+            <img src="images/gallery/womens-haircut-scissors-comb-wet-hair-small.jpg"
+                 alt="Hairdresser cutting a client&#x27;s long wet dark hair with scissors and a comb, with the top section clipped up"
+                 width="480" height="600" loading="lazy">
+          </a>
+          <figcaption>
+            <span class="gallery-caption">Women&#x27;s cut</span>
+            <span class="gallery-tag">Haircuts</span>
+          </figcaption>
+        </figure>
+        <!-- Photo 4: Deep conditioning (Beauty Treatments) -->
+        <figure class="gallery-item" data-category="beauty">
+          <a href="images/gallery/hair-wash-conditioning-treatment-salon-basin.jpg" class="lightbox-link">
+            <img src="images/gallery/hair-wash-conditioning-treatment-salon-basin-small.jpg"
+                 alt="Stylist working conditioner through a client&#x27;s wavy hair with a brush at a salon basin"
+                 width="600" height="400" loading="lazy">
+          </a>
+          <figcaption>
+            <span class="gallery-caption">Deep conditioning</span>
+            <span class="gallery-tag">Beauty Treatments</span>
+          </figcaption>
+        </figure>
+        <!-- Photo 5: Box braids (Styling) -->
+        <figure class="gallery-item" data-category="styling">
+          <a href="images/gallery/box-braids-hairstyles-profile-view.jpg" class="lightbox-link">
+            <img src="images/gallery/box-braids-hairstyles-profile-view-small.jpg"
+                 alt="Three women in profile wearing long box braids in different styles, including curly braid ends"
+                 width="400" height="600" loading="lazy">
+          </a>
+          <figcaption>
+            <span class="gallery-caption">Box braids</span>
+            <span class="gallery-tag">Styling</span>
+          </figcaption>
+        </figure>
+        <!-- Photo 6: Foil highlights (Colouring) -->
+        <figure class="gallery-item" data-category="colouring">
+          <a href="images/gallery/foil-highlights-hair-colouring-stylist-client.jpg" class="lightbox-link">
+            <img src="images/gallery/foil-highlights-hair-colouring-stylist-client-small.jpg"
+                 alt="Stylist with curly hair painting lightener onto a section of foil-wrapped hair while the client looks ahead"
+                 width="400" height="600" loading="lazy">
+          </a>
+          <figcaption>
+            <span class="gallery-caption">Foil highlights</span>
+            <span class="gallery-tag">Colouring</span>
+          </figcaption>
+        </figure>
+        <!-- Photo 7: Fade and neckline (Haircuts) -->
+        <figure class="gallery-item" data-category="haircuts">
+          <a href="images/gallery/neckline-fade-haircut-gold-clippers.jpg" class="lightbox-link">
+            <img src="images/gallery/neckline-fade-haircut-gold-clippers-small.jpg"
+                 alt="Barber using gold clippers to trim the neckline of a client&#x27;s short fade haircut, with a comb in the other hand"
+                 width="400" height="600" loading="lazy">
+          </a>
+          <figcaption>
+            <span class="gallery-caption">Fade and neckline</span>
+            <span class="gallery-tag">Haircuts</span>
+          </figcaption>
+        </figure>
+        <!-- Photo 8: Brow shaping (Beauty Treatments) -->
+        <figure class="gallery-item" data-category="beauty">
+          <a href="images/gallery/eyebrow-threading-brow-shaping-close-up.jpg" class="lightbox-link">
+            <img src="images/gallery/eyebrow-threading-brow-shaping-close-up-small.jpg"
+                 alt="Close-up side view of a woman having her eyebrow shaped with the threading technique"
+                 width="400" height="600" loading="lazy">
+          </a>
+          <figcaption>
+            <span class="gallery-caption">Brow shaping</span>
+            <span class="gallery-tag">Beauty Treatments</span>
+          </figcaption>
+        </figure>
+        <!-- Photo 9: Sculptural updo (Styling) -->
+        <figure class="gallery-item" data-category="styling">
+          <a href="images/gallery/sculptural-updo-cowrie-shells-hairstyle.jpg" class="lightbox-link">
+            <img src="images/gallery/sculptural-updo-cowrie-shells-hairstyle-small.jpg"
+                 alt="Woman with a sculptural updo of wrapped hair rings decorated with cowrie shells, photographed in a studio"
+                 width="429" height="600" loading="lazy">
+          </a>
+          <figcaption>
+            <span class="gallery-caption">Sculptural updo</span>
+            <span class="gallery-tag">Styling</span>
+          </figcaption>
+        </figure>
+        <!-- Photo 10: Copper-red colour (Colouring) -->
+        <figure class="gallery-item" data-category="colouring">
+          <a href="images/gallery/short-red-hair-colour-razor-line-cut.jpg" class="lightbox-link">
+            <img src="images/gallery/short-red-hair-colour-razor-line-cut-small.jpg"
+                 alt="Woman with a short copper-red dyed haircut and a shaved line design, against a dark studio background"
+                 width="429" height="600" loading="lazy">
+          </a>
+          <figcaption>
+            <span class="gallery-caption">Copper-red colour</span>
+            <span class="gallery-tag">Colouring</span>
+          </figcaption>
+        </figure>
+        <!-- Photo 11: Trim and tidy (Haircuts) -->
+        <figure class="gallery-item" data-category="haircuts">
+          <a href="images/gallery/hair-trim-scissors-comb-copper-hair.jpg" class="lightbox-link">
+            <img src="images/gallery/hair-trim-scissors-comb-copper-hair-small.jpg"
+                 alt="Close-up of hands trimming the ends of long copper-orange hair with scissors and a wooden comb"
+                 width="600" height="400" loading="lazy">
+          </a>
+          <figcaption>
+            <span class="gallery-caption">Trim and tidy</span>
+            <span class="gallery-tag">Haircuts</span>
+          </figcaption>
+        </figure>
+        <!-- Photo 12: Scalp massage and wash (Beauty Treatments) -->
+        <figure class="gallery-item" data-category="beauty">
+          <a href="images/gallery/shampoo-scalp-massage-salon-basin.jpg" class="lightbox-link">
+            <img src="images/gallery/shampoo-scalp-massage-salon-basin-small.jpg"
+                 alt="Woman relaxing with her eyes closed while a stylist in black gloves shampoos her hair at a salon basin"
+                 width="400" height="600" loading="lazy">
+          </a>
+          <figcaption>
+            <span class="gallery-caption">Scalp massage and wash</span>
+            <span class="gallery-tag">Beauty Treatments</span>
+          </figcaption>
+        </figure>
+        <!-- Photo 13: Cornrow braids (Styling) -->
+        <figure class="gallery-item" data-category="styling">
+          <a href="images/gallery/cornrow-braids-hairstyle-back-view.jpg" class="lightbox-link">
+            <img src="images/gallery/cornrow-braids-hairstyle-back-view-small.jpg"
+                 alt="Back view of two women with long braided hairstyles, with neat cornrow patterns across the top"
+                 width="480" height="600" loading="lazy">
+          </a>
+          <figcaption>
+            <span class="gallery-caption">Cornrow braids</span>
+            <span class="gallery-tag">Styling</span>
+          </figcaption>
+        </figure>
+        <!-- Photo 14: Highlights in progress (Colouring) -->
+        <figure class="gallery-item" data-category="colouring">
+          <a href="images/gallery/hair-highlights-foils-salon-close-up.jpg" class="lightbox-link">
+            <img src="images/gallery/hair-highlights-foils-salon-close-up-small.jpg"
+                 alt="Close-up of a stylist applying highlights to a client&#x27;s dark hair with many silver foils in place"
+                 width="600" height="400" loading="lazy">
+          </a>
+          <figcaption>
+            <span class="gallery-caption">Highlights in progress</span>
+            <span class="gallery-tag">Colouring</span>
+          </figcaption>
+        </figure>
+        <!-- Photo 15: A cut for every age (Haircuts) -->
+        <figure class="gallery-item" data-category="haircuts">
+          <a href="images/gallery/haircut-stylist-older-client-salon-chair.jpg" class="lightbox-link">
+            <img src="images/gallery/haircut-stylist-older-client-salon-chair-small.jpg"
+                 alt="Stylist trimming an older client&#x27;s grey hair while the client checks her phone, in a salon with wooden beams"
+                 width="401" height="600" loading="lazy">
+          </a>
+          <figcaption>
+            <span class="gallery-caption">A cut for every age</span>
+            <span class="gallery-tag">Haircuts</span>
+          </figcaption>
+        </figure>
+        <!-- Photo 16: Special occasion updo (Styling) -->
+        <figure class="gallery-item" data-category="styling">
+          <a href="images/gallery/bridal-updo-curls-tiara-special-occasion.jpg" class="lightbox-link">
+            <img src="images/gallery/bridal-updo-curls-tiara-special-occasion-small.jpg"
+                 alt="Bride in a white robe with a curly updo, loose face-framing curls and a silver tiara"
+                 width="480" height="600" loading="lazy">
+          </a>
+          <figcaption>
+            <span class="gallery-caption">Special occasion updo</span>
+            <span class="gallery-tag">Styling</span>
+          </figcaption>
+        </figure>
+      </div>
+
+      <p class="gallery-credit">
+        Gallery photos are free-licence images from Pexels. Photographer credits
+        are listed in the References section of the project README.
+      </p>
+    </section>
+
+  </main>
+
+  <!-- Website Footer -->
+  <footer>
+    <div class="footer-content">
+      <p><span class="footer-icon" aria-hidden="true">&#128205;</span> 15 Baker Street, Rosebank, Johannesburg, 2196</p>
+      <p><span class="footer-icon" aria-hidden="true">&#128222;</span> 011 447 2200</p>
+      <p><span class="footer-icon" aria-hidden="true">&#128337;</span> Mon - Fri: 09:00 - 18:00 &nbsp;|&nbsp; Sat: 08:00 - 16:00 &nbsp;|&nbsp; Sun: Closed</p>
+    </div>
+    <p>&copy; 2026 Daisy Blooms Salon. All rights reserved.</p>
+  </footer>
+
+  <!-- All JavaScript for the site lives in one file, loaded last so the page
+       content exists before the script runs -->
+  <script src="js/script.js"></script>
+
+</body>
+
+</html>
