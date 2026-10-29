@@ -1,5 +1,5 @@
 /* ==========================================================================
-   interactive.css  |  Part 3: accordion, search box and sort menu
+   interactive.css  |  Part 3: accordion, search box, sort menu and form messages
    Loaded after style.css, so it only adds new rules.
    Palette: blush pink #E8A7B0 | deep plum #5C3B4E | cream #FDF6F0 | rose-gold #C6A15B
    ========================================================================== */
@@ -173,8 +173,169 @@ tbody tr[hidden] {
   display: none !important;
 }
 
+/* ---------- Forms: error messages, hints and the enquiry response ---------- */
+
+/* Small help text under a field */
+.field-hint {
+  margin: 0.3rem 0 0;
+  font-size: 0.85rem;
+  color: #5C3B4E;
+}
+
+.char-count {
+  text-align: right;
+}
+
+.optional {
+  font-weight: 400;
+  font-size: 0.85em;
+}
+
+/* Error message under a field. The warning symbol means the problem is
+   shown by more than colour alone. */
+.field-error {
+  margin: 0.3rem 0 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #9b1c1c;
+}
+
+.field-error:empty {
+  display: none;
+}
+
+.field-error::before {
+  content: "\26A0\FE0E  ";
+}
+
+/* A field with a problem gets a red border */
+.form-group.has-error input,
+.form-group.has-error select,
+.form-group.has-error textarea {
+  border-color: #9b1c1c;
+  box-shadow: 0 0 0 2px rgba(155, 28, 28, 0.15);
+}
+
+/* The "please fix" line at the top of the form */
+.form-summary {
+  margin: 0 0 1rem;
+  padding: 0.8rem 1rem;
+  border-left: 5px solid #9b1c1c;
+  border-radius: 6px;
+  background: #fff3f3;
+  color: #9b1c1c;
+  font-weight: 600;
+}
+
+.form-summary[hidden] {
+  display: none;
+}
+
+/* Radio buttons and the checkbox sit beside their labels, not full width */
+.form-group.radio-group {
+  border: none;
+  padding: 0;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.form-group.radio-group legend {
+  padding: 0;
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+}
+
+.form-group .radio-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-right: 1.25rem;
+}
+
+.form-group .radio-option input[type="radio"],
+.form-group.checkbox-group input[type="checkbox"] {
+  width: auto !important;
+  margin: 0;
+  padding: 0;
+  accent-color: #5C3B4E;
+}
+
+.form-group .radio-option label,
+.form-group.checkbox-group label {
+  display: inline;
+  margin: 0;
+}
+
+.form-group.checkbox-group input[type="checkbox"] {
+  margin-right: 0.5rem;
+}
+
+/* The answer shown after a valid enquiry */
+.enquiry-response {
+  max-width: 700px;
+  margin: 1rem auto 0;
+  padding: 1.5rem;
+  border-top: 5px solid #C6A15B;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 2px 12px rgba(92, 59, 78, 0.18);
+}
+
+.enquiry-response[hidden] {
+  display: none;
+}
+
+.enquiry-response:focus {
+  outline: 3px solid rgba(198, 161, 91, 0.5);
+}
+
+.enquiry-response h3 {
+  margin-top: 0;
+}
+
+.response-list {
+  display: grid;
+  grid-template-columns: max-content 1fr;   /* label column, then the answer */
+  gap: 0.5rem 1.25rem;
+  margin: 1rem 0;
+}
+
+.response-list dt {
+  font-weight: 700;
+  color: #5C3B4E;
+}
+
+.response-list dd {
+  margin: 0;
+  overflow-wrap: anywhere;                  /* long notes never push the page wider */
+}
+
+.response-note {
+  padding: 0.7rem 0.9rem;
+  border-radius: 8px;
+  background: #FDF6F0;
+}
+
+.response-actions {
+  margin-top: 1.25rem;
+}
+
+.response-call {
+  margin: 0.75rem 0 0;
+  font-size: 0.9rem;
+}
+
 /* ---------- Mobile ---------- */
 @media (max-width: 600px) {
+  .response-list {
+    grid-template-columns: 1fr;             /* label above its answer on phones */
+    gap: 0.15rem;
+  }
+
+  .response-list dd {
+    margin-bottom: 0.6rem;
+  }
+
   .tool-field {
     min-width: 100%;
   }

@@ -7,7 +7,8 @@
      1. Lightbox         (index.html and gallery.html)
      2. Gallery filter   (gallery.html)
      3. Services page    (services.html): accordion, search, sort, summary
-   More sections (forms and map) are added in later steps.
+     4. Enquiry form     (enquiry.html): validation and an instant response
+   More sections (contact form and map) are added in later steps.
    ========================================================================== */
 
 // Wait until the page has finished loading, then start each feature.
@@ -17,6 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
   initLightbox();
   initGalleryFilter();
   initServicesPage();
+  initEnquiryForm();
 });
 
 
@@ -425,4 +427,535 @@ function initServicesPage() {
 
   // Fill in the summary line when the page first loads
   applySearch();
+}
+
+
+/* ==========================================================================
+   4. ENQUIRY FORM
+   What it does:
+     1. Builds the "Specific Service" menu from the service type chosen.
+     2. Types the date as dd/mm/yyyy (adds the slashes automatically).
+     3. Builds the "Preferred Time" menu from the opening hours and how long
+        the chosen service takes.
+     4. Checks every field and shows a clear message next to any problem.
+     5. When everything is valid, works out a price estimate and shows a
+        response on the page without reloading it.
+   There is no server: the response is worked out in the browser from the
+   data below. Keep these prices in step with the table on services.html.
+   ========================================================================== */
+
+// ---- Salon data used by the enquiry form ----
+// Opening hours in 24-hour time. Sunday is closed, so it has no entry.
+var OPENING_HOURS = {
+  weekday:  { open: 9, close: 18, text: "Mon - Fri 09:00 - 18:00" },
+  saturday: { open: 8, close: 16, text: "Sat 08:00 - 16:00" }
+};
+
+var BRANCHES = {
+  rosebank: { name: "Rosebank", address: "15 Baker Street, Rosebank, Johannesburg, 2196", phone: "011 447 2200" },
+  melville: { name: "Melville", address: "7th Street, Melville, Johannesburg, 2109",     phone: "011 482 3355" }
+};
+
+// Each service type holds its services: price in rand, minutes it takes,
+// an optional note and, for "from" prices, from: true.
+var ENQUIRY_SERVICES = {
+  "haircut": {
+    label: "Haircut",
+    items: [
+      { id: "womens-cut",    name: "Women's Cut & Trim",         price: 280, minutes: 60 },
+      { id: "mens-cut",      name: "Men's Cut",                  price: 150, minutes: 30 },
+      { id: "childrens-cut", name: "Children's Cut (under 12)",  price: 100, minutes: 30 },
+      { id: "fringe-trim",   name: "Fringe / Trim Only",         price: 80,  minutes: 30 }
+    ]
+  },
+  "styling": {
+    label: "Styling",
+    items: [
+      { id: "blow-out",       name: "Blow-out",               price: 220, minutes: 60 },
+      { id: "braiding-short", name: "Braiding (short)",       price: 350, minutes: 120,
+        note: "Please arrive with clean, detangled hair." },
+      { id: "braiding-long",  name: "Braiding (long)",        price: 550, minutes: 240,
+        note: "Please arrive with clean, detangled hair." },
+      { id: "updo",           name: "Special Occasion Updo",  price: 450, minutes: 90 }
+    ]
+  },
+  "colouring": {
+    label: "Colouring",
+    items: [
+      { id: "full-colour",     name: "Full Colour",             price: 650,  minutes: 120,
+        note: "A patch test is recommended 48 hours before your first colour service." },
+      { id: "balayage",        name: "Balayage",                price: 950,  minutes: 180,
+        note: "A patch test is recommended 48 hours before your first colour service." },
+      { id: "creative-colour", name: "Creative Colour",         price: 1200, minutes: 180, from: true,
+        note: "Your final price is confirmed after a short consultation." },
+      { id: "root-touch-up",   name: "Root Touch-Up",           price: 400,  minutes: 90,
+        note: "A patch test is recommended 48 hours before your first colour service." }
+    ]
+  },
+  "beauty-treatment": {
+    label: "Beauty Treatment",
+    items: [
+      { id: "deep-conditioning", name: "Deep Conditioning Treatment", price: 180, minutes: 45 },
+      { id: "scalp-treatment",   name: "Scalp Treatment",             price: 200, minutes: 45 },
+      { id: "brow-shaping",      name: "Brow Shaping",                price: 90,  minutes: 30 },
+      { id: "brow-tint",         name: "Brow Tint",                   price: 120, minutes: 30,
+        note: "A patch test is recommended 48 hours before a brow tint." }
+    ]
+  }
+};
+
+var DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+var MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July",
+                   "August", "September", "October", "November", "December"];
+
+// ---- Small helpers ----
+function pad2(number) { return (number < 10 ? "0" : "") + number; }
+
+// 570 minutes after midnight -> "09:30"
+function formatClock(totalMinutes) {
+  return pad2(Math.floor(totalMinutes / 60)) + ":" + pad2(totalMinutes % 60);
+}
+
+// 1200 -> "R1,200"
+function formatRand(amount) {
+  return "R" + String(amount).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+// 90 -> "1 hour 30 minutes"
+function formatDuration(minutes) {
+  var h = Math.floor(minutes / 60);
+  var m = minutes % 60;
+  var parts = [];
+  if (h > 0) { parts.push(h + (h === 1 ? " hour" : " hours")); }
+  if (m > 0) { parts.push(m + " minutes"); }
+  return parts.join(" ");
+}
+
+// Find a service by its type key and id
+function findService(typeKey, itemId) {
+  var type = ENQUIRY_SERVICES[typeKey];
+  if (!type) { return null; }
+  for (var i = 0; i < type.items.length; i++) {
+    if (type.items[i].id === itemId) { return type.items[i]; }
+  }
+  return null;
+}
+
+// Opening hours for a date (a JavaScript Date). Returns null on Sundays.
+function hoursFor(dateObj) {
+  var day = dateObj.getDay();           // 0 = Sunday ... 6 = Saturday
+  if (day === 0) { return null; }
+  return day === 6 ? OPENING_HOURS.saturday : OPENING_HOURS.weekday;
+}
+
+// All start times (in minutes after midnight) when a service still ends
+// before closing time, every 30 minutes.
+function startTimesFor(dateObj, serviceMinutes) {
+  var hours = hoursFor(dateObj);
+  var times = [];
+  if (!hours) { return times; }
+  for (var t = hours.open * 60; t + serviceMinutes <= hours.close * 60; t += 30) {
+    times.push(t);
+  }
+  return times;
+}
+
+// Turn "dd/mm/yyyy" text into a real date, or explain what is wrong.
+// Returns { date: Date } when fine, or { error: "message" } when not.
+function parseEnquiryDate(text) {
+  var value = text.trim();
+  if (value === "") {
+    return { error: "Please enter your preferred date." };
+  }
+
+  var match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(value);
+  if (!match) {
+    return { error: "Please use the format dd/mm/yyyy, for example 14/11/2026." };
+  }
+
+  var day = parseInt(match[1], 10);
+  var month = parseInt(match[2], 10);
+  var year = parseInt(match[3], 10);
+  var date = new Date(year, month - 1, day);
+
+  // JavaScript quietly rolls 31/02 over into March, so check it did not
+  if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
+    return { error: "That date does not exist. Please check the day and month." };
+  }
+
+  var today = new Date();
+  today.setHours(0, 0, 0, 0);
+  var tomorrow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+  var limit = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 180);
+
+  if (date < tomorrow) {
+    return { error: "Please choose a date from tomorrow onwards." };
+  }
+  if (date > limit) {
+    return { error: "We can only take enquiries up to 6 months ahead." };
+  }
+  if (date.getDay() === 0) {
+    return { error: "We are closed on Sundays. Please choose Monday to Saturday." };
+  }
+  return { date: date };
+}
+
+// Tidy a South African phone number. Accepts spaces, dashes and +27.
+// Returns the 10 digits (for example "0821234567") or "" when invalid.
+function cleanPhone(text) {
+  var digits = text.replace(/[\s\-()]/g, "");
+  if (/^\+27\d{9}$/.test(digits)) { digits = "0" + digits.slice(3); }
+  return /^0\d{9}$/.test(digits) ? digits : "";
+}
+
+// "0821234567" -> "082 123 4567"
+function showPhone(tenDigits) {
+  return tenDigits.slice(0, 3) + " " + tenDigits.slice(3, 6) + " " + tenDigits.slice(6);
+}
+
+// Create an element with optional class and text. textContent (not
+// innerHTML) is used so that anything a visitor typed can never be run as code.
+function makeEl(tag, className, text) {
+  var node = document.createElement(tag);
+  if (className) { node.className = className; }
+  if (text !== undefined) { node.textContent = text; }
+  return node;
+}
+
+
+function initEnquiryForm() {
+  var form = document.getElementById("enquiry-form");
+  if (!form) {
+    return; // Not the enquiry page.
+  }
+
+  // Switch off the browser's own pop-up messages: ours are clearer.
+  // (Done here, not in the HTML, so the basic checks still work if
+  // JavaScript fails to load.)
+  form.noValidate = true;
+
+  var nameBox    = document.getElementById("enquiry-name");
+  var emailBox   = document.getElementById("enquiry-email");
+  var phoneBox   = document.getElementById("enquiry-phone");
+  var branchMenu = document.getElementById("enquiry-branch");
+  var typeMenu   = document.getElementById("enquiry-service");
+  var itemMenu   = document.getElementById("enquiry-item");
+  var dateBox    = document.getElementById("enquiry-date");
+  var timeMenu   = document.getElementById("enquiry-time");
+  var detailsBox = document.getElementById("enquiry-details");
+  var consentBox = document.getElementById("enquiry-consent");
+  var contactSet = document.getElementById("enquiry-contact");
+  var counter    = document.getElementById("enquiry-details-count");
+  var summary    = document.getElementById("enquiry-summary");
+  var response   = document.getElementById("enquiry-response");
+  var submitBtn  = document.getElementById("enquiry-submit");
+
+  // ---------- Dependent menus ----------
+
+  // Fill the "Specific Service" menu for the chosen service type
+  function fillItems(typeKey) {
+    itemMenu.innerHTML = "";               // empty it (no visitor text is used here)
+    var type = ENQUIRY_SERVICES[typeKey];
+
+    if (!type) {
+      itemMenu.appendChild(new Option("-- Choose a service type first --", ""));
+      itemMenu.disabled = true;
+      return;
+    }
+
+    itemMenu.appendChild(new Option("-- Select a " + type.label.toLowerCase() + " --", ""));
+    type.items.forEach(function (item) {
+      var label = item.name + " - " + (item.from ? "from " : "") + formatRand(item.price);
+      itemMenu.appendChild(new Option(label, item.id));
+    });
+    itemMenu.disabled = false;
+  }
+
+  // Fill the "Preferred Time" menu when the service and date are both valid
+  function fillTimes() {
+    var service = findService(typeMenu.value, itemMenu.value);
+    var parsed = parseEnquiryDate(dateBox.value);
+    var previous = timeMenu.value;
+
+    timeMenu.innerHTML = "";
+
+    if (!service || !parsed.date) {
+      timeMenu.appendChild(new Option("-- Choose a service and date first --", ""));
+      timeMenu.disabled = true;
+      return;
+    }
+
+    timeMenu.appendChild(new Option("-- Select a time --", ""));
+    startTimesFor(parsed.date, service.minutes).forEach(function (minutes) {
+      var endMinutes = minutes + service.minutes;
+      timeMenu.appendChild(new Option(formatClock(minutes) + " (finishes about " + formatClock(endMinutes) + ")", formatClock(minutes)));
+    });
+    timeMenu.disabled = false;
+
+    // Keep the visitor's earlier choice if it is still possible
+    timeMenu.value = previous;
+    if (timeMenu.value !== previous) { timeMenu.value = ""; }
+  }
+
+  // ---------- Checking each field ----------
+  // Each checker returns an error message, or "" when the field is fine.
+
+  var checks = {
+    "enquiry-name": function () {
+      var value = nameBox.value.trim();
+      if (value === "") { return "Please enter your full name."; }
+      if (!/^[\p{L}][\p{L}' -]{1,59}$/u.test(value)) {
+        return "Please use letters only (2 to 60 characters). Spaces, hyphens and apostrophes are fine.";
+      }
+      return "";
+    },
+
+    "enquiry-email": function () {
+      var value = emailBox.value.trim();
+      if (value === "") { return "Please enter your email address."; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value)) {
+        return "That email does not look right. It should look like name@example.com.";
+      }
+      return "";
+    },
+
+    "enquiry-phone": function () {
+      var value = phoneBox.value.trim();
+      if (value === "") { return "Please enter your phone number."; }
+      if (cleanPhone(value) === "") {
+        return "Please enter a 10-digit South African number starting with 0, for example 0821234567.";
+      }
+      return "";
+    },
+
+    "enquiry-contact": function () {
+      if (!contactSet.querySelector("input:checked")) {
+        return "Please choose how you would like us to reply.";
+      }
+      return "";
+    },
+
+    "enquiry-branch": function () {
+      return branchMenu.value === "" ? "Please choose a branch." : "";
+    },
+
+    "enquiry-service": function () {
+      return typeMenu.value === "" ? "Please choose a service type." : "";
+    },
+
+    "enquiry-item": function () {
+      if (typeMenu.value === "") { return "Please choose a service type first."; }
+      return itemMenu.value === "" ? "Please choose the specific service you want." : "";
+    },
+
+    "enquiry-date": function () {
+      return parseEnquiryDate(dateBox.value).error || "";
+    },
+
+    "enquiry-time": function () {
+      if (timeMenu.disabled) { return "Please choose a service and a valid date first, then pick a time."; }
+      return timeMenu.value === "" ? "Please choose a time." : "";
+    },
+
+    "enquiry-details": function () {
+      return detailsBox.value.length > 300 ? "Please keep your message to 300 characters or fewer." : "";
+    },
+
+    "enquiry-consent": function () {
+      return consentBox.checked ? "" : "Please tick the box so we are allowed to contact you.";
+    }
+  };
+
+  var fieldIds = Object.keys(checks);
+
+  // The element that holds the red error styling and the one to focus
+  function groupOf(id) { return document.getElementById(id).closest(".form-group") || document.getElementById(id); }
+  function focusTargetOf(id) {
+    return id === "enquiry-contact" ? contactSet.querySelector("input") : document.getElementById(id);
+  }
+
+  // Show or clear the message for one field. Returns true when the field is valid.
+  function validateField(id) {
+    var message = checks[id]();
+    var errorLine = document.getElementById(id + "-error");
+    var group = groupOf(id);
+    var control = focusTargetOf(id);
+
+    errorLine.textContent = message;
+    group.classList.toggle("has-error", message !== "");
+    if (id !== "enquiry-contact") {
+      control.setAttribute("aria-invalid", message !== "" ? "true" : "false");
+    }
+    return message === "";
+  }
+
+  // ---------- Live behaviour while the visitor fills in the form ----------
+
+  // Type the date as dd/mm/yyyy: only digits, slashes added automatically
+  dateBox.addEventListener("input", function () {
+    var digits = dateBox.value.replace(/\D/g, "").slice(0, 8);
+    var shown = digits;
+    if (digits.length > 4) {
+      shown = digits.slice(0, 2) + "/" + digits.slice(2, 4) + "/" + digits.slice(4);
+    } else if (digits.length > 2) {
+      shown = digits.slice(0, 2) + "/" + digits.slice(2);
+    }
+    dateBox.value = shown;
+    fillTimes();
+    if (document.getElementById("enquiry-date-error").textContent !== "") { validateField("enquiry-date"); }
+  });
+
+  typeMenu.addEventListener("change", function () {
+    fillItems(typeMenu.value);
+    fillTimes();
+    validateField("enquiry-service");
+    if (document.getElementById("enquiry-item-error").textContent !== "") { validateField("enquiry-item"); }
+  });
+
+  itemMenu.addEventListener("change", function () {
+    fillTimes();
+    validateField("enquiry-item");
+  });
+
+  // Character counter under the message box
+  detailsBox.addEventListener("input", function () {
+    counter.textContent = detailsBox.value.length + " / 300";
+  });
+
+  // Check a field when the visitor leaves it (blur), and re-check it as they
+  // type once it has shown an error, so the message disappears as soon as
+  // the problem is fixed.
+  fieldIds.forEach(function (id) {
+    var target = id === "enquiry-contact" ? contactSet : document.getElementById(id);
+
+    target.addEventListener("blur", function () {
+      // Do not nag about empty fields the visitor has only tabbed through
+      if (id === "enquiry-contact") { return; }
+      var isEmpty = (target.value === "" || target.type === "checkbox");
+      if (!isEmpty) { validateField(id); }
+    }, true);
+
+    target.addEventListener("input", function () {
+      if (document.getElementById(id + "-error").textContent !== "") { validateField(id); }
+    });
+
+    target.addEventListener("change", function () {
+      if (id === "enquiry-service" || id === "enquiry-item") { return; } // handled above
+      if (id === "enquiry-date") { return; }
+      validateField(id);
+    });
+  });
+
+  // ---------- Sending the form ----------
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();                       // stop the page reloading
+
+    var problems = [];
+    fieldIds.forEach(function (id) {
+      if (!validateField(id)) { problems.push(id); }
+    });
+
+    if (problems.length > 0) {
+      summary.textContent = "Please fix " + problems.length +
+        (problems.length === 1 ? " highlighted field" : " highlighted fields") + " before sending.";
+      summary.hidden = false;
+      focusTargetOf(problems[0]).focus();          // jump to the first problem
+      return;
+    }
+
+    summary.hidden = true;
+
+    // Immediate feedback while the answer is worked out
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Checking availability...";
+    form.setAttribute("aria-busy", "true");
+
+    setTimeout(function () {
+      showResponse();
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Submit Enquiry";
+      form.removeAttribute("aria-busy");
+    }, 700);
+  });
+
+  // ---------- The response ----------
+  function showResponse() {
+    var service  = findService(typeMenu.value, itemMenu.value);
+    var date     = parseEnquiryDate(dateBox.value).date;
+    var branch   = BRANCHES[branchMenu.value];
+    var hours    = hoursFor(date);
+    var phone    = cleanPhone(phoneBox.value);
+    var method   = contactSet.querySelector("input:checked").value;
+    var firstName = nameBox.value.trim().split(/[\s]+/)[0];
+    var reference = "DB-" + (100000 + Math.floor(Math.random() * 900000));
+
+    var contactWhere = method === "email"
+      ? emailBox.value.trim()
+      : showPhone(phone);
+
+    var priceText = (service.from ? "From " : "") + formatRand(service.price);
+
+    // The rows of the answer: [label, value]
+    var rows = [
+      ["Reference",            reference],
+      ["Service",              service.name],
+      ["Estimated price",      priceText],
+      ["Estimated time",       formatDuration(service.minutes)],
+      ["Branch",               branch.name + ", " + branch.address],
+      ["Requested appointment", DAY_NAMES[date.getDay()] + " " + date.getDate() + " " +
+                                MONTH_NAMES[date.getMonth()] + " " + date.getFullYear() +
+                                " at " + timeMenu.value],
+      ["Availability",         "This time is inside our opening hours (" + hours.text +
+                                ") and leaves enough time to finish your service. A team member will confirm the exact slot."],
+      ["We will reply by",     method + " on " + contactWhere + " within one working day"]
+    ];
+
+    if (detailsBox.value.trim() !== "") {
+      rows.push(["Your notes", detailsBox.value.trim()]);
+    }
+
+    // Build the answer box with DOM methods
+    response.innerHTML = "";
+    response.appendChild(makeEl("h3", "", "Thank you, " + firstName + "! Your enquiry is in."));
+    response.appendChild(makeEl("p", "", "Here is what we have worked out for you:"));
+
+    var list = makeEl("dl", "response-list");
+    rows.forEach(function (row) {
+      list.appendChild(makeEl("dt", "", row[0]));
+      list.appendChild(makeEl("dd", "", row[1]));
+    });
+    response.appendChild(list);
+
+    if (service.note) {
+      response.appendChild(makeEl("p", "response-note", "Good to know: " + service.note));
+    }
+
+    var actions = makeEl("div", "response-actions");
+    var again = makeEl("button", "btn", "Make another enquiry");
+    again.type = "button";
+    again.addEventListener("click", resetForm);
+    actions.appendChild(again);
+    actions.appendChild(makeEl("p", "response-call", "Need to change something? Call " + branch.name + " on " + branch.phone + "."));
+    response.appendChild(actions);
+
+    form.hidden = true;
+    response.hidden = false;
+    response.focus();                  // move the keyboard focus to the answer
+  }
+
+  // Go back to a fresh, empty form
+  function resetForm() {
+    form.reset();
+    fillItems("");
+    fillTimes();
+    counter.textContent = "0 / 300";
+    fieldIds.forEach(function (id) {
+      document.getElementById(id + "-error").textContent = "";
+      groupOf(id).classList.remove("has-error");
+    });
+    summary.hidden = true;
+    response.hidden = true;
+    form.hidden = false;
+    nameBox.focus();
+  }
 }

@@ -2,113 +2,204 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daisy Blooms Salon | Enquiry</title>
-    <!-- Google Fonts: Playfair Display for headings, Montserrat for body text -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enquire About Hair &amp; Beauty Services | Daisy Blooms Salon</title>
+  <meta name="description" content="Send an enquiry to Daisy Blooms Salon in Rosebank or Melville, Johannesburg. Choose a service, date and time and get an instant price estimate.">
+  <meta name="keywords" content="book hair appointment Johannesburg, salon enquiry Rosebank, hair salon Melville, haircut price estimate, braiding booking, Daisy Blooms Salon enquiry">
+
+  <!-- Google Fonts: Playfair Display for headings, Montserrat for body text -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Part 3: styles for form error messages and the enquiry response -->
+  <link rel="stylesheet" href="css/interactive.css">
 </head>
 
 <body>
 
-    <header>
-        <h1>Daisy Blooms Salon</h1>
-        <p>Hair &amp; beauty, tailored to you</p>
-    </header>
+  <header>
+    <h1>Daisy Blooms Salon</h1>
+    <p>Hair &amp; beauty, tailored to you</p>
+  </header>
 
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="services.html">Services</a> <a href="gallery.html">Gallery</a>
-        <a href="enquiry.html">Enquiry</a>
-        <a href="contact.html">Contact</a>
-    </nav>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="services.html">Services</a> <a href="gallery.html">Gallery</a>
+    <a href="enquiry.html">Enquiry</a>
+    <a href="contact.html">Contact</a>
+  </nav>
 
-    <main>
+  <main>
 
-        <!-- Enquiry intro section -->
-        <section>
-            <h2>Make an Enquiry</h2>
-            <p>
-                Ready to book, or want to check pricing and availability before you
-                commit? Fill in the form below and our team will confirm your
-                appointment details as soon as possible.
-            </p>
-        </section>
+    <!-- Enquiry intro section -->
+    <section>
+      <h2>Make an Enquiry</h2>
+      <p>
+        Ready to book, or want to check pricing and availability before you
+        commit? Fill in the form below and you will see a price estimate and
+        your requested appointment straight away. Our team will then confirm
+        your appointment details as soon as possible.
+      </p>
+    </section>
 
-        <!-- Enquiry form section (client-side validation added in Part 3) -->
-        <section>
-            <h2>Enquiry Form</h2>
-            <!-- action="#" is a placeholder: this form doesn't submit to a real
-                 backend yet, since server-side processing is outside the scope
-                 of this module. "required" attributes on individual fields give
-                 basic client-side validation ahead of the full JS validation
-                 and processed response due in Part 3. -->
-            <form action="#" method="post">
+    <!-- Enquiry form section -->
+    <section id="enquiry-section">
+      <h2>Enquiry Form</h2>
 
-                <div class="form-group">
-                    <label for="enquiry-name">Full Name</label>
-                    <input type="text" id="enquiry-name" name="enquiry-name" required>
-                </div>
+      <!-- Part 3: this form is checked and processed by js/script.js.
+           The browser's own pop-up messages are switched off by the script
+           (form.noValidate) so that our clearer messages show instead.
+           There is no server behind this demo: the answer below the form is
+           worked out in the browser from the salon's price and hours data.
+           The old action="#" placeholder is replaced by the script. -->
+      <noscript>
+        <p class="form-summary">This form needs JavaScript. Please switch it on, or call us on 011 447 2200.</p>
+      </noscript>
 
-                <div class="form-group">
-                    <label for="enquiry-email">Email Address</label>
-                    <input type="email" id="enquiry-email" name="enquiry-email" required>
-                </div>
+      <!-- Summary of problems, shown at the top when a submit fails -->
+      <p id="enquiry-summary" class="form-summary" role="alert" tabindex="-1" hidden></p>
 
-                <!-- Basic HTML5 validation for now: "required" stops empty submission,
-                     and the pattern restricts the phone field to exactly 10 digits
-                     (South African local format, e.g. 0821234567). Full JavaScript
-                     validation with custom error messages is added in Part 3. -->
-                <div class="form-group">
-                    <label for="enquiry-phone">Phone Number</label>
-                    <input type="tel" id="enquiry-phone" name="enquiry-phone"
-                           pattern="[0-9]{10}" placeholder="0821234567" required>
-                </div>
+      <form id="enquiry-form" action="#" method="post">
 
-                <div class="form-group">
-                    <label for="enquiry-service">Service of Interest</label>
-                    <select id="enquiry-service" name="enquiry-service" required>
-                        <option value="">-- Select a service --</option>
-                        <option value="haircut">Haircut</option>
-                        <option value="styling">Styling</option>
-                        <option value="colouring">Colouring</option>
-                        <option value="beauty-treatment">Beauty Treatment</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="enquiry-date">Preferred Date</label>
-                    <input type="date" id="enquiry-date" name="enquiry-date" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="enquiry-details">Additional Details</label>
-                    <textarea id="enquiry-details" name="enquiry-details" rows="4"
-                              placeholder="Tell us anything else we should know"></textarea>
-                </div>
-
-                <button type="submit" class="btn">Submit Enquiry</button>
-
-            </form>
-        </section>
-
-    </main>
-
-    <!-- Footer: contact details and opening hours, per the approved design
-         brief's UX requirement to keep this information prominent on every
-         page rather than only on contact.html. -->
-    <footer>
-        <div class="footer-content">
-            <p><span class="footer-icon" aria-hidden="true">&#128205;</span> 15 Baker Street, Rosebank, Johannesburg, 2196</p>
-            <p><span class="footer-icon" aria-hidden="true">&#128222;</span> 011 447 2200</p>
-            <p><span class="footer-icon" aria-hidden="true">&#128337;</span> Mon - Fri: 09:00 - 18:00 &nbsp;|&nbsp; Sat: 08:00 - 16:00 &nbsp;|&nbsp; Sun: Closed</p>
+        <div class="form-group">
+          <label for="enquiry-name">Full Name</label>
+          <input type="text" id="enquiry-name" name="enquiry-name" autocomplete="name"
+                 maxlength="60" required aria-describedby="enquiry-name-error">
+          <p class="field-error" id="enquiry-name-error" aria-live="polite"></p>
         </div>
-        <p>&copy; 2026 Daisy Blooms Salon. All rights reserved.</p>
-    </footer>
+
+        <div class="form-group">
+          <label for="enquiry-email">Email Address</label>
+          <input type="email" id="enquiry-email" name="enquiry-email" autocomplete="email"
+                 maxlength="100" required aria-describedby="enquiry-email-error">
+          <p class="field-error" id="enquiry-email-error" aria-live="polite"></p>
+        </div>
+
+        <div class="form-group">
+          <label for="enquiry-phone">Phone Number</label>
+          <input type="tel" id="enquiry-phone" name="enquiry-phone" autocomplete="tel"
+                 placeholder="0821234567" maxlength="16" required
+                 aria-describedby="enquiry-phone-hint enquiry-phone-error">
+          <p class="field-hint" id="enquiry-phone-hint">10 digits, for example 0821234567.</p>
+          <p class="field-error" id="enquiry-phone-error" aria-live="polite"></p>
+        </div>
+
+        <!-- Radio buttons: how the visitor wants to be contacted -->
+        <fieldset class="form-group radio-group" id="enquiry-contact" aria-describedby="enquiry-contact-error">
+          <legend>How should we reply?</legend>
+          <div class="radio-option">
+            <input type="radio" id="contact-phone" name="enquiry-contact" value="phone call">
+            <label for="contact-phone">Phone call</label>
+          </div>
+          <div class="radio-option">
+            <input type="radio" id="contact-whatsapp" name="enquiry-contact" value="WhatsApp">
+            <label for="contact-whatsapp">WhatsApp</label>
+          </div>
+          <div class="radio-option">
+            <input type="radio" id="contact-email" name="enquiry-contact" value="email">
+            <label for="contact-email">Email</label>
+          </div>
+          <p class="field-error" id="enquiry-contact-error" aria-live="polite"></p>
+        </fieldset>
+
+        <div class="form-group">
+          <label for="enquiry-branch">Preferred Branch</label>
+          <select id="enquiry-branch" name="enquiry-branch" required aria-describedby="enquiry-branch-error">
+            <option value="">-- Select a branch --</option>
+            <option value="rosebank">Rosebank (15 Baker Street)</option>
+            <option value="melville">Melville (7th Street)</option>
+          </select>
+          <p class="field-error" id="enquiry-branch-error" aria-live="polite"></p>
+        </div>
+
+        <div class="form-group">
+          <label for="enquiry-service">Service of Interest</label>
+          <select id="enquiry-service" name="enquiry-service" required aria-describedby="enquiry-service-error">
+            <option value="">-- Select a service --</option>
+            <option value="haircut">Haircut</option>
+            <option value="styling">Styling</option>
+            <option value="colouring">Colouring</option>
+            <option value="beauty-treatment">Beauty Treatment</option>
+          </select>
+          <p class="field-error" id="enquiry-service-error" aria-live="polite"></p>
+        </div>
+
+        <!-- The options in this menu are filled in by script.js
+             once a service type has been chosen above -->
+        <div class="form-group">
+          <label for="enquiry-item">Specific Service</label>
+          <select id="enquiry-item" name="enquiry-item" required disabled aria-describedby="enquiry-item-error">
+            <option value="">-- Choose a service type first --</option>
+          </select>
+          <p class="field-error" id="enquiry-item-error" aria-live="polite"></p>
+        </div>
+
+        <!-- The date is typed as dd/mm/yyyy (South African format). A plain
+             text box is used because a browser's date picker shows the date
+             in the visitor's own computer format, which cannot be controlled. -->
+        <div class="form-group">
+          <label for="enquiry-date">Preferred Date</label>
+          <input type="text" id="enquiry-date" name="enquiry-date" inputmode="numeric"
+                 placeholder="dd/mm/yyyy" maxlength="10" autocomplete="off" required
+                 aria-describedby="enquiry-date-hint enquiry-date-error">
+          <p class="field-hint" id="enquiry-date-hint">Day/month/year, for example 14/11/2026. We are closed on Sundays.</p>
+          <p class="field-error" id="enquiry-date-error" aria-live="polite"></p>
+        </div>
+
+        <!-- Time slots are worked out by script.js from the opening hours
+             and how long the chosen service takes -->
+        <div class="form-group">
+          <label for="enquiry-time">Preferred Time</label>
+          <select id="enquiry-time" name="enquiry-time" required disabled aria-describedby="enquiry-time-error">
+            <option value="">-- Choose a service and date first --</option>
+          </select>
+          <p class="field-error" id="enquiry-time-error" aria-live="polite"></p>
+        </div>
+
+        <div class="form-group">
+          <label for="enquiry-details">Additional Details <span class="optional">(optional)</span></label>
+          <textarea id="enquiry-details" name="enquiry-details" rows="4" maxlength="300"
+                    placeholder="Tell us anything else we should know"
+                    aria-describedby="enquiry-details-count enquiry-details-error"></textarea>
+          <p class="field-hint char-count" id="enquiry-details-count">0 / 300</p>
+          <p class="field-error" id="enquiry-details-error" aria-live="polite"></p>
+        </div>
+
+        <!-- Checkbox: permission to contact the visitor -->
+        <div class="form-group checkbox-group">
+          <input type="checkbox" id="enquiry-consent" name="enquiry-consent" required
+                 aria-describedby="enquiry-consent-error">
+          <label for="enquiry-consent">I agree that Daisy Blooms Salon may contact me about this enquiry.</label>
+          <p class="field-error" id="enquiry-consent-error" aria-live="polite"></p>
+        </div>
+
+        <button type="submit" class="btn" id="enquiry-submit">Submit Enquiry</button>
+      </form>
+
+      <!-- The answer to the enquiry is built here by script.js -->
+      <div id="enquiry-response" class="enquiry-response" role="status" tabindex="-1" hidden></div>
+    </section>
+
+  </main>
+
+  <!-- Footer: contact details and opening hours, per the approved design
+       brief's UX requirement to keep this information prominent on every
+       page rather than only on contact.html. -->
+  <footer>
+    <div class="footer-content">
+      <p><span class="footer-icon" aria-hidden="true">&#128205;</span> 15 Baker Street, Rosebank, Johannesburg, 2196</p>
+      <p><span class="footer-icon" aria-hidden="true">&#128222;</span> 011 447 2200</p>
+      <p><span class="footer-icon" aria-hidden="true">&#128337;</span> Mon - Fri: 09:00 - 18:00 &nbsp;|&nbsp; Sat: 08:00 - 16:00 &nbsp;|&nbsp; Sun: Closed</p>
+    </div>
+    <p>&copy; 2026 Daisy Blooms Salon. All rights reserved.</p>
+  </footer>
+
+  <!-- Part 3: the site's JavaScript, loaded last so the page exists first -->
+  <script src="js/script.js"></script>
 
 </body>
 
