@@ -8,7 +8,9 @@
      2. Gallery filter   (gallery.html)
      3. Services page    (services.html): accordion, search, sort, summary
      4. Enquiry form     (enquiry.html): validation and an instant response
-   More sections (contact form and map) are added in later steps.
+     5. Contact page     (contact.html): interactive Leaflet map and the
+                         contact form that builds an email
+   More sections (SEO helpers, anything extra) can be added below.
    ========================================================================== */
 
 // Wait until the page has finished loading, then start each feature.
@@ -19,6 +21,8 @@ document.addEventListener("DOMContentLoaded", function () {
   initGalleryFilter();
   initServicesPage();
   initEnquiryForm();
+  initSalonMap();
+  initContactForm();
 });
 
 
@@ -957,5 +961,348 @@ function initEnquiryForm() {
     response.hidden = true;
     form.hidden = false;
     nameBox.focus();
+  }
+}
+
+
+/* ==========================================================================
+   5a. CONTACT PAGE: INTERACTIVE MAP (Leaflet)
+   One map shows both branches. Each pin opens a pop-up with the address,
+   phone number and a directions link. The buttons above the map move it
+   to a branch. Leaflet is stored in lib/leaflet, so no outside script is
+   needed. The map pictures (tiles) come from OpenStreetMap.
+   The pin positions are approximate street-level positions.
+   ========================================================================== */
+var SALON_LOCATIONS = [
+  { key: "rosebank", name: "Rosebank Branch", address: "15 Baker Street, Rosebank, Johannesburg, 2196",
+    phone: "011 447 2200", lat: -26.1450, lng: 28.0430 },
+  { key: "melville", name: "Melville Branch", address: "7th Street, Melville, Johannesburg, 2109",
+    phone: "011 482 3355", lat: -26.1775, lng: 28.0086 }
+];
+
+function initSalonMap() {
+  var mapBox = document.getElementById("salon-map");
+  if (!mapBox) {
+    return; // Not the contact page.
+  }
+
+  // If the Leaflet library did not load (for example no internet), say so
+  // instead of leaving an empty box.
+  if (typeof L === "undefined") {
+    mapBox.textContent = "The map could not load right now. Please use the branch addresses above.";
+    return;
+  }
+
+  // scrollWheelZoom is off so that scrolling down the page with a mouse
+  // wheel does not get stuck zooming the map instead.
+  var map = L.map(mapBox, { scrollWheelZoom: false });
+
+  // The map pictures, with the credit OpenStreetMap asks for
+  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(map);
+
+  var markers = {};   // the pin for each branch, found by its key
+
+  SALON_LOCATIONS.forEach(function (place) {
+    var pin = L.marker([place.lat, place.lng], { title: place.name, alt: place.name }).addTo(map);
+    pin.bindPopup(buildMapPopup(place));
+    markers[place.key] = pin;
+  });
+
+  // Build the pop-up from DOM elements
+  function buildMapPopup(place) {
+    var box = document.createElement("div");
+    box.appendChild(makeEl("strong", "", "Daisy Blooms Salon, " + place.name));
+    box.appendChild(makeEl("br"));
+    box.appendChild(document.createTextNode(place.address));
+    box.appendChild(makeEl("br"));
+
+    var call = makeEl("a", "", place.phone);
+    call.href = "tel:" + place.phone.replace(/\s/g, "");
+    box.appendChild(call);
+    box.appendChild(makeEl("br"));
+
+    var directions = makeEl("a", "", "Get directions");
+    directions.href = "https://www.google.com/maps/dir/?api=1&destination=" + place.lat + "," + place.lng;
+    directions.target = "_blank";
+    directions.rel = "noopener noreferrer";   // security: the new tab cannot control this page
+    box.appendChild(directions);
+    return box;
+  }
+
+  // Zoom out so both pins are visible
+  function showBoth() {
+    map.closePopup();
+    var points = SALON_LOCATIONS.map(function (p) { return [p.lat, p.lng]; });
+    map.fitBounds(points, { padding: [60, 60] });
+  }
+
+  // Glide to one branch and open its pop-up
+  function showOne(key) {
+    var place = SALON_LOCATIONS.filter(function (p) { return p.key === key; })[0];
+    map.flyTo([place.lat, place.lng], 16, { duration: 1.2 });
+    map.once("moveend", function () { markers[key].openPopup(); });
+  }
+
+  // The three buttons above the map
+  var buttons = document.querySelectorAll("[data-map-view]");
+  buttons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      var view = button.dataset.mapView;
+      buttons.forEach(function (b) {
+        b.setAttribute("aria-pressed", b === button ? "true" : "false");
+      });
+      if (view === "both") { showBoth(); } else { showOne(view); }
+    });
+  });
+
+  // Clicking a pin should also update which button looks switched on
+  SALON_LOCATIONS.forEach(function (place) {
+    markers[place.key].on("click", function () {
+      buttons.forEach(function (b) {
+        b.setAttribute("aria-pressed", b.dataset.mapView === place.key ? "true" : "false");
+      });
+    });
+  });
+
+  showBoth();
+}
+
+
+/* ==========================================================================
+   5b. CONTACT FORM -> READY-TO-SEND EMAIL
+   What it does:
+     1. Checks name, email, branch, message type and message.
+     2. Shows a clear message next to anything that is wrong.
+     3. When everything is valid, builds an email (to, subject, body) and
+        shows it on the page with buttons to open it in the visitor's email
+        app (a mailto: link), open it in Gmail, or copy the text.
+   There is no server, so nothing is sent until the visitor presses send in
+   their own email app. The recipient addresses are stored below.
+   ========================================================================== */
+var CONTACT_RECIPIENTS = {
+  rosebank: { label: "Rosebank", email: "rosebank@daisyblooms.co.za" },
+  melville: { label: "Melville", email: "melville@daisyblooms.co.za" }
+};
+
+function initContactForm() {
+  var form = document.getElementById("contact-form");
+  if (!form) {
+    return; // Not the contact page.
+  }
+
+  form.noValidate = true;   // use our own messages instead of the browser's
+
+  var nameBox    = document.getElementById("contact-name");
+  var emailBox   = document.getElementById("contact-email");
+  var branchMenu = document.getElementById("contact-branch");
+  var typeMenu   = document.getElementById("contact-type");
+  var messageBox = document.getElementById("contact-message");
+  var counter    = document.getElementById("contact-message-count");
+  var summary    = document.getElementById("contact-summary");
+  var preview    = document.getElementById("contact-preview");
+
+  // Each checker returns an error message, or "" when the field is fine
+  var checks = {
+    "contact-name": function () {
+      var value = nameBox.value.trim();
+      if (value === "") { return "Please enter your full name."; }
+      if (!/^[\p{L}][\p{L}' -]{1,59}$/u.test(value)) {
+        return "Please use letters only (2 to 60 characters). Spaces, hyphens and apostrophes are fine.";
+      }
+      return "";
+    },
+    "contact-email": function () {
+      var value = emailBox.value.trim();
+      if (value === "") { return "Please enter your email address."; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value)) {
+        return "That email does not look right. It should look like name@example.com.";
+      }
+      return "";
+    },
+    "contact-branch": function () {
+      return branchMenu.value === "" ? "Please choose which branch to send your message to." : "";
+    },
+    "contact-type": function () {
+      return typeMenu.value === "" ? "Please choose a message type." : "";
+    },
+    "contact-message": function () {
+      var value = messageBox.value.trim();
+      if (value === "") { return "Please type your message."; }
+      if (value.length < 10) { return "Your message is a bit short. Please write at least 10 characters."; }
+      if (value.length > 800) { return "Please keep your message to 800 characters or fewer."; }
+      return "";
+    }
+  };
+
+  var fieldIds = Object.keys(checks);
+
+  // Show or clear the message for one field. Returns true when it is valid.
+  function validateField(id) {
+    var message = checks[id]();
+    var control = document.getElementById(id);
+    document.getElementById(id + "-error").textContent = message;
+    control.closest(".form-group").classList.toggle("has-error", message !== "");
+    control.setAttribute("aria-invalid", message !== "" ? "true" : "false");
+    return message === "";
+  }
+
+  // Check a field when the visitor leaves it, and keep re-checking while they
+  // type once an error is showing, so the message vanishes as soon as it is fixed
+  fieldIds.forEach(function (id) {
+    var control = document.getElementById(id);
+    control.addEventListener("blur", function () {
+      if (control.value !== "") { validateField(id); }
+    });
+    control.addEventListener("input", function () {
+      if (document.getElementById(id + "-error").textContent !== "") { validateField(id); }
+    });
+    control.addEventListener("change", function () { validateField(id); });
+  });
+
+  messageBox.addEventListener("input", function () {
+    counter.textContent = messageBox.value.length + " / 800";
+  });
+
+  // ---------- Sending the form ----------
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    var problems = [];
+    fieldIds.forEach(function (id) {
+      if (!validateField(id)) { problems.push(id); }
+    });
+
+    if (problems.length > 0) {
+      summary.textContent = "Please fix " + problems.length +
+        (problems.length === 1 ? " highlighted field" : " highlighted fields") + " before continuing.";
+      summary.hidden = false;
+      document.getElementById(problems[0]).focus();
+      return;
+    }
+
+    summary.hidden = true;
+    showEmailPreview();
+  });
+
+  // Build the email text and show it
+  function showEmailPreview() {
+    var recipient = CONTACT_RECIPIENTS[branchMenu.value];
+    var typeLabel = typeMenu.options[typeMenu.selectedIndex].text;
+    var name      = nameBox.value.trim();
+    var email     = emailBox.value.trim();
+    var message   = messageBox.value.trim();
+
+    // A subject must be one line, so remove any line breaks
+    var subject = ("Website message (" + typeLabel + ") from " + name).replace(/[\r\n]+/g, " ");
+
+    var body =
+      "Hello Daisy Blooms Salon (" + recipient.label + "),\n\n" +
+      message + "\n\n" +
+      "Kind regards,\n" + name + "\n\n" +
+      "Message type: " + typeLabel + "\n" +
+      "Reply to: " + email + "\n" +
+      "Sent from the Daisy Blooms Salon website contact form";
+
+    // mailto: link. encodeURIComponent makes spaces, accents and symbols safe;
+    // email programs expect line breaks as \r\n.
+    var mailtoLink = "mailto:" + recipient.email +
+      "?subject=" + encodeURIComponent(subject) +
+      "&body=" + encodeURIComponent(body.replace(/\n/g, "\r\n"));
+
+    // Same email as a Gmail "compose" link, for visitors without an email app
+    var gmailLink = "https://mail.google.com/mail/?view=cm&fs=1" +
+      "&to=" + encodeURIComponent(recipient.email) +
+      "&su=" + encodeURIComponent(subject) +
+      "&body=" + encodeURIComponent(body);
+
+    // Build the preview with DOM methods, so typed text is never run as code
+    preview.innerHTML = "";
+    preview.appendChild(makeEl("h3", "", "Your email is ready"));
+    preview.appendChild(makeEl("p", "", "Check it over, then press a button below to send it. Nothing has been sent yet."));
+
+    var list = makeEl("dl", "response-list");
+    list.appendChild(makeEl("dt", "", "To"));
+    list.appendChild(makeEl("dd", "", recipient.email));
+    list.appendChild(makeEl("dt", "", "Subject"));
+    list.appendChild(makeEl("dd", "", subject));
+    preview.appendChild(list);
+
+    preview.appendChild(makeEl("p", "email-body-label", "Message"));
+    preview.appendChild(makeEl("div", "email-body", body));
+
+    if (mailtoLink.length > 1900) {
+      preview.appendChild(makeEl("p", "response-note",
+        "Your email is quite long. If it opens cut short, use \u201CCopy email text\u201D instead."));
+    }
+
+    var actions = makeEl("div", "email-actions");
+
+    var openMail = makeEl("a", "btn", "Open in my email app");
+    openMail.href = mailtoLink;
+    actions.appendChild(openMail);
+
+    var openGmail = makeEl("a", "btn", "Open in Gmail");
+    openGmail.href = gmailLink;
+    openGmail.target = "_blank";
+    openGmail.rel = "noopener noreferrer";   // security: the new tab cannot control this page
+    actions.appendChild(openGmail);
+
+    var copyBtn = makeEl("button", "btn", "Copy email text");
+    copyBtn.type = "button";
+    actions.appendChild(copyBtn);
+
+    var editBtn = makeEl("button", "btn", "Edit my message");
+    editBtn.type = "button";
+    actions.appendChild(editBtn);
+
+    preview.appendChild(actions);
+
+    var copyStatus = makeEl("p", "response-call");
+    copyStatus.setAttribute("aria-live", "polite");
+    preview.appendChild(copyStatus);
+
+    var fullText = "To: " + recipient.email + "\nSubject: " + subject + "\n\n" + body;
+    copyBtn.addEventListener("click", function () {
+      copyText(fullText, function (ok) {
+        copyStatus.textContent = ok ? "Copied! Paste it into a new email." : "Copying did not work. Please select the text above and copy it yourself.";
+      });
+    });
+
+    // Go back to the form with everything still filled in
+    editBtn.addEventListener("click", function () {
+      preview.hidden = true;
+      form.hidden = false;
+      messageBox.focus();
+    });
+
+    form.hidden = true;
+    preview.hidden = false;
+    preview.focus();            // move the keyboard focus to the email
+  }
+
+  // Copy text to the clipboard. Newer browsers have navigator.clipboard;
+  // older ones fall back to a hidden text box and the copy command.
+  function copyText(text, done) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(
+        function () { done(true); },
+        function () { done(false); }
+      );
+      return;
+    }
+    var temp = document.createElement("textarea");
+    temp.value = text;
+    temp.setAttribute("readonly", "");
+    temp.style.position = "fixed";
+    temp.style.opacity = "0";
+    document.body.appendChild(temp);
+    temp.select();
+    var ok = false;
+    try { ok = document.execCommand("copy"); } catch (error) { ok = false; }
+    document.body.removeChild(temp);
+    done(ok);
   }
 }
