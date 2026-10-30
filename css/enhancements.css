@@ -1,8 +1,315 @@
 /* ==========================================================================
-   interactive.css  |  Part 3: accordion, search box, sort menu and form messages
-   Loaded after style.css, so it only adds new rules.
+   enhancements.css  |  Part 3 styles in ONE file (loaded after style.css)
+   Sections: 1. Logo   2. Gallery and lightbox   3. Accordion, search, forms and map
    Palette: blush pink #E8A7B0 | deep plum #5C3B4E | cream #FDF6F0 | rose-gold #C6A15B
    ========================================================================== */
+
+/* ---------- 1. Logo in the page header ---------- */
+header h1 {
+  margin-top: 0;
+  margin-bottom: 0.25rem;
+  line-height: 0;              /* removes the gap an image can leave inside a heading */
+}
+
+header h1 img {
+  display: block;
+  width: 100%;                 /* shrinks on small screens ... */
+  max-width: 420px;            /* ... and never grows bigger than this */
+  height: auto;
+  margin: 0 auto;
+}
+
+/* ---------- 2. Gallery and lightbox ---------- */
+
+/* ---------- Gallery page layout ---------- */
+.gallery-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.gallery-intro {
+  max-width: 700px;
+  margin: 0 auto 1.5rem;
+  text-align: center;
+}
+
+/* ---------- Filter buttons ---------- */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;           /* buttons wrap onto a second line on phones */
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.filter-bar button {
+  padding: 0.6rem 1.2rem;
+  border: 2px solid #C6A15B;
+  border-radius: 999px;      /* pill shape */
+  background: #FDF6F0;
+  color: #5C3B4E;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.filter-bar button:hover {
+  background: #E8A7B0;
+  box-shadow: 0 0 10px rgba(198, 161, 91, 0.45);
+}
+
+.filter-bar button:focus-visible {
+  outline: 3px solid #5C3B4E;
+  outline-offset: 3px;
+}
+
+/* The button for the filter that is currently switched on */
+.filter-bar button[aria-pressed="true"] {
+  background: #5C3B4E;
+  color: #FDF6F0;
+}
+
+.gallery-count {
+  text-align: center;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ---------- Gallery grid ---------- */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);   /* 4 columns on desktop */
+  gap: 1rem;
+}
+
+.gallery-item {
+  margin: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(92, 59, 78, 0.15);
+  /* These transitions give the fade when a filter hides or shows a photo */
+  transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.gallery-item:hover {
+  box-shadow: 0 0 14px rgba(198, 161, 91, 0.6);
+}
+
+/* script.js adds this class for a moment while a photo fades out or in */
+.gallery-item.is-fading {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+/* The hidden attribute must win over the display rules above */
+.gallery-item[hidden] {
+  display: none !important;
+}
+
+.gallery-item a {
+  display: block;
+  cursor: zoom-in;
+}
+
+.gallery-item img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;        /* every thumbnail becomes a square */
+  object-fit: cover;          /* crop to fill the square, no stretching */
+  object-position: center 30%; /* keep heads in view */
+  transition: transform 0.4s ease;
+}
+
+.gallery-item:hover img {
+  transform: scale(1.06);
+}
+
+.gallery-item a:focus-visible {
+  outline: 3px solid #C6A15B;
+  outline-offset: -3px;
+}
+
+.gallery-item figcaption {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.6rem 0.8rem;
+  color: #5C3B4E;
+}
+
+.gallery-caption {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.gallery-tag {
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8a6a1f;             /* darker gold so the small text stays readable */
+}
+
+.gallery-credit {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+/* ---------- Home page extras ---------- */
+.gallery-preview-grid a.lightbox-link {
+  cursor: zoom-in;
+}
+
+.gallery-more {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+/* ---------- Lightbox (pop-up photo viewer, built by script.js) ---------- */
+.lightbox {
+  position: fixed;
+  inset: 0;                    /* cover the whole screen */
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(40, 22, 32, 0.93);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.lightbox[hidden] {
+  display: none;
+}
+
+.lightbox.is-open {
+  opacity: 1;
+}
+
+.lightbox-figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: min(92vw, 900px);
+}
+
+.lightbox-img {
+  max-width: 100%;
+  max-height: 78vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  transition: opacity 0.25s ease;
+}
+
+/* Dim the picture while the next one is loading */
+.lightbox-figure.is-loading .lightbox-img {
+  opacity: 0.25;
+}
+
+.lightbox-caption {
+  margin-top: 0.75rem;
+  max-width: 90vw;
+  text-align: center;
+  font-size: 0.95rem;
+  color: #FDF6F0;
+}
+
+.lightbox-counter {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.85rem;
+  color: #E8A7B0;
+}
+
+.lightbox-close,
+.lightbox-prev,
+.lightbox-next {
+  position: absolute;
+  width: 48px;                 /* big enough to tap on a phone */
+  height: 48px;
+  border: none;
+  border-radius: 50%;
+  background: #C6A15B;
+  color: #5C3B4E;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.lightbox-close { top: 1rem; right: 1rem; }
+.lightbox-prev  { left: 1rem;  top: 50%; transform: translateY(-50%); }
+.lightbox-next  { right: 1rem; top: 50%; transform: translateY(-50%); }
+
+.lightbox-close:hover,
+.lightbox-prev:hover,
+.lightbox-next:hover {
+  background: #E8A7B0;
+}
+
+.lightbox-close:focus-visible,
+.lightbox-prev:focus-visible,
+.lightbox-next:focus-visible {
+  outline: 3px solid #FDF6F0;
+  outline-offset: 3px;
+}
+
+/* Stop the page behind the lightbox from scrolling while it is open */
+body.lightbox-open {
+  overflow: hidden;
+}
+
+/* ---------- Responsive: tablet and mobile ---------- */
+@media (max-width: 900px) {
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr);   /* 2 columns on tablets */
+  }
+}
+
+@media (max-width: 600px) {
+  .gallery-grid {
+    gap: 0.6rem;                             /* still 2 columns on phones */
+  }
+
+  .gallery-item figcaption {
+    padding: 0.4rem 0.5rem;
+  }
+
+  .gallery-caption { font-size: 0.85rem; }
+
+  .lightbox-prev,
+  .lightbox-next {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+
+  .lightbox-prev { left: 0.4rem; }
+  .lightbox-next { right: 0.4rem; }
+}
+
+/* Respect visitors who ask their device for less motion */
+@media (prefers-reduced-motion: reduce) {
+  .gallery-item,
+  .gallery-item img,
+  .lightbox,
+  .lightbox-img,
+  .filter-bar button {
+    transition: none;
+  }
+}
+
+
+/* ---------- 3. Accordion, search, forms and map ---------- */
 
 /* ---------- Search, sort and expand/collapse tools ---------- */
 .services-tools {
@@ -462,3 +769,7 @@ tbody tr[hidden] {
     transition: none;
   }
 }
+
+/* Part 3: restore plain-text header spacing after removing the logo image */
+header h1 { line-height: 1.25 !important; height: auto !important; margin: 0 0 0.4rem !important; padding: 0 !important; }
+header p { margin-top: 0.4rem !important; position: static !important; }

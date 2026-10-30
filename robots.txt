@@ -1,0 +1,8 @@
+# robots.txt for Daisy Blooms Salon
+# Tells search engine crawlers which parts of the site they may visit.
+User-agent: *
+Allow: /
+# The screenshots folder only holds evidence images for the README
+Disallow: /screenshots/
+
+Sitemap: https://noluthandozondidev.github.io/daisy-blooms-website/sitemap.xml
