@@ -255,11 +255,7 @@ Date: 24/09/2026
 ### Part 3
 AI tool used:Duck.ai 
 
-Purpose of use:
-- Writing and explaining the code for the gallery lightbox and the gallery filters.
-- Integrating the Leaflet map with OpenStreetMap.
-- Helping to undestand the SEO files structured data, `robots.txt`, `sitemap.xml`, and `404.html`.
-- Step-by-step guidance for moving the project files, committing to GitHub, and deploying with GitHub Pages.
+Step-by-step guidance for moving the project files, committing to GitHub, and deploying with GitHub Pages.
 
 Extent of use: Help with how to structure some files and not duplicate, understand what `404.html` and plan out how to handling the work load in a sitemap for a couple of days. understand the `robots.txt` tested in  the webite the browser (including the Console for errors), and tested again on the live GitHub Pages site. The student made the final design decisions and work that put together the POE. The student takes full ownership of the final submitted content.
 
